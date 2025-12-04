@@ -5,11 +5,12 @@ const usersSchema = new mongoose.Schema(
     
     name: { type: String, required: true, trim: true, minlength: 2, lowercase: true },
     
-    phone:{type: String, required: true,trim:true, match :['/^\d+$/','Invalid phone number'] },
+    phoneNumber:{type: String, required: true,trim:true, match :['/^\d+$/','Invalid phone number'] },
     
     email: { type: String, required: true, unique: true, lowercase: true, match: [/^\S+@\S+\.\S+$/, 'Invalid email'] },
     
     password: { type: String, required: true, trim: true, minlength: 8 },
+     terms: { type: Boolean, required: true, default: false }
   },
   { timestamps: true }
 );

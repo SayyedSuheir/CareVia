@@ -2,6 +2,7 @@ import Register from "../components/Register"
 
 
 function page() {
+  
   return (
     <div>
         <Register/>
