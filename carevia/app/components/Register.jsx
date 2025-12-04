@@ -19,18 +19,18 @@ function Register() {
 
             
             <div>
-                <label  class="block text-sm font-medium text-text-primary mb-1">Phone Number</label>
-                <div class="flex space-x-3">
+                <label  className="block text-sm font-medium text-text-primary mb-1">Phone Number</label>
+                <div className="flex space-x-3">
                     {/* <!-- Country Code Dropdown: Ready for API injection --> */}
                     <select id="country-code-select" name="country-code-select"
-                           class="form-input p-3 border border-gray-300 rounded-lg text-text-primary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150 flex-shrink-0 w-32 md:w-36 bg-white">
+                           className="form-input p-3 border border-gray-300 rounded-lg text-text-primary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150 flex-shrink-0 w-32 md:w-36 bg-white">
                         {/* <!-- Placeholder option only. Options will be injected by JavaScript. --> */}
                         <option value="" disabled selected>Select Code</option>
                     </select>
                     
                    
                     <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required
-                           class="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
+                           className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
                 </div>
             </div>
 
