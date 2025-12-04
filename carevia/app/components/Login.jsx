@@ -15,7 +15,7 @@ function Login() {
        
         <button className="w-full flex items-center justify-center space-x-2 p-3 border border-gray-200 rounded-lg text-action-blue font-semibold hover:bg-soft-gray transition duration-150 mb-6">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zM4.7 6.6l5.3 5.3 5.3-5.3h-10.6zM15 13.9H5c-.55 0-1-.45-1-1v-2.8l5.3 5.3c.39.39 1.02.39 1.41 0l5.3-5.3v2.8c0 .55-.45 1-1 1z" clip-rule="evenodd" fill-rule="evenodd"></path>
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zM4.7 6.6l5.3 5.3 5.3-5.3h-10.6zM15 13.9H5c-.55 0-1-.45-1-1v-2.8l5.3 5.3c.39.39 1.02.39 1.41 0l5.3-5.3v2.8c0 .55-.45 1-1 1z" clipRule="evenodd" fill-rule="evenodd"></path>
             </svg>
             <span>Sign In with Google</span>
         </button>

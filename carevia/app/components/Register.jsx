@@ -12,14 +12,14 @@ function Register() {
             
            
             <div>
-                <label for="name" className="block text-sm font-medium text-text-primary mb-1">Full Name</label>
+                <label  className="block text-sm font-medium text-text-primary mb-1">Full Name</label>
                 <input type="text" id="name" name="name" placeholder="John Smith" required
                        className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
             </div>
 
             
             <div>
-                <label for="phone" class="block text-sm font-medium text-text-primary mb-1">Phone Number</label>
+                <label  class="block text-sm font-medium text-text-primary mb-1">Phone Number</label>
                 <div class="flex space-x-3">
                     {/* <!-- Country Code Dropdown: Ready for API injection --> */}
                     <select id="country-code-select" name="country-code-select"
@@ -36,20 +36,20 @@ function Register() {
 
            
             <div>
-                <label for="email" className="block text-sm font-medium text-text-primary mb-1">Email Address</label>
+                <label  className="block text-sm font-medium text-text-primary mb-1">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="you@example.com" required
                        className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
             </div>
 
             <div>
-                <label for="password" className="block text-sm font-medium text-text-primary mb-1">Password</label>
+                <label  className="block text-sm font-medium text-text-primary mb-1">Password</label>
                 <input type="password" id="password" name="password" placeholder="Minimum 8 characters" required
                        className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
             </div>
 
             
             <div>
-                <label for="confirm-password" className="block text-sm font-medium text-text-primary mb-1">Confirm Password</label>
+                <label  className="block text-sm font-medium text-text-primary mb-1">Confirm Password</label>
                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Repeat your password" required
                        className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"/>
             </div>
@@ -58,7 +58,7 @@ function Register() {
             <div className="flex items-center">
                 <input id="terms" name="terms" type="checkbox" required
                        className="h-4 w-4 text-primary-teal border-gray-300 rounded focus:ring-primary-teal transition duration-150"/>
-                <label for="terms" className="ml-2 block text-sm text-text-secondary">
+                <label  className="ml-2 block text-sm text-text-secondary">
                     I agree to the 
                     <a href="#" className="text-primary-teal hover:text-action-blue font-medium">Terms and Conditions</a>
                 </label>

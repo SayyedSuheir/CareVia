@@ -1,3 +1,71 @@
 @import "tailwindcss";
+    /* Define custom colors and font based on the request */
+        :root {
+            --color-primary: #2BB0A8;
+            --color-light-gray: #F7F9FC;
+            --color-gold: #FFC857;
+            --color-dark-text: #1f2937;
+            --color-medium-gray: #6b7280;
+        }
 
+       
 
+        /* Custom shadow and rounded corners to match the image precisely */
+        .product-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
+            border-radius: 20px; /* More rounded than standard Tailwind classes */
+            max-width: 320px;
+            width: 90%;
+            overflow: hidden;
+        }
+        
+        /* Button style using the primary color */
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(43, 176, 168, 0.3); /* Subtle button shadow */
+        }
+        
+        .btn-primary:hover {
+            background-color: #1a8f87; /* Slightly darker on hover */
+            transform: translateY(-1px);
+        }
+
+        /* Image container style */
+        .image-container {
+            /* This mimics the subtle light gray border shown in the generated image */
+            background-color: var(--color-light-gray);
+            height: 200px;
+            padding: 1rem;
+        }
+        
+        .image-container img {
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Title underline style */
+        .item-title {
+            color: var(--color-dark-text);
+            border-bottom: 3px solid var(--color-gold);
+            display: inline-block;
+            padding-bottom: 0.25rem;
+            margin-bottom: 1rem;
+        }
+.navbar{
+    background-color: #2BB0A8 !important;
+}
+
+.container-fluid{
+    width:100%;
+    display: flex;
+}
+
+.nav-logo, .btns{
+    width:50%;
+}
+.register, .login{
+    width:100%;
+    color:white;
+}
