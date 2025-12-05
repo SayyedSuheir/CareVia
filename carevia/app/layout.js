@@ -1,7 +1,7 @@
 
 import "./globals.css";
 
-
+import { UserProvider } from './components/UserContext'
 
 export default function RootLayout({ children }) {
   return (
@@ -9,7 +9,9 @@ export default function RootLayout({ children }) {
       <body
        
       >
-        {children}
+      <UserProvider>
+         {children}
+        </UserProvider>
       </body>
     </html>
   );

@@ -23,12 +23,12 @@ function Register() {
     terms: false,
   });
 
-  // ======================= COUNTRY FETCH ======================
+  // Fetch country codes
   useEffect(() => {
     const fetchCountryCodes = async () => {
       try {
         const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,idd,cca2,flags"
+          "https://restcountries.com/v3.1/all?fields=name,idd,cca2"
         );
         const data = await response.json();
 
@@ -37,12 +37,10 @@ function Register() {
           .map((country) => {
             const dialCode =
               country.idd.root + (country.idd.suffixes?.[0] || "");
-            const formattedDialCode = dialCode.replace("+", "00");
             return {
               name: country.name.common,
               code: country.cca2,
-              dialCode: formattedDialCode,
-              flag: country.flags.svg,
+              dialCode,
             };
           })
           .sort((a, b) => a.name.localeCompare(b.name));
@@ -55,11 +53,10 @@ function Register() {
         setLoading(false);
       }
     };
-
     fetchCountryCodes();
   }, []);
 
-  // ======================= FORM READY CHECK ======================
+  // Form validation
   const isFormReady =
     formData.name.trim() &&
     formData.countryCode &&
@@ -70,7 +67,50 @@ function Register() {
     formData.password === formData.confirmPassword &&
     formData.terms;
 
-  // ======================= FORM HANDLERS ======================
+  // Handlers
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name === "phone") {
+      setFormData((prev) => ({
+        ...prev,
+        phone: value.replace(/[^0-9]/g, ""),
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    const val = e.target.value;
+    setSearchTerm(val);
+    setShowDropdown(true);
+    if (!val.trim()) {
+      setFilteredCountries(countryCodes);
+      return;
+    }
+    setFilteredCountries(
+      countryCodes.filter(
+        (c) =>
+          c.name.toLowerCase().startsWith(val.toLowerCase()) ||
+          c.dialCode.includes(val)
+      )
+    );
+  };
+
+  const handleCountrySelect = (country) => {
+  const numericCode = country.dialCode.replace("+", "00"); // convert + to 00
+  setFormData((prev) => ({
+    ...prev,
+    countryCode: numericCode, // store numeric code
+    countryName: country.name,
+  }));
+  setSearchTerm(numericCode); // show the code in the input
+  setShowDropdown(false);
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormReady) return;
@@ -89,11 +129,8 @@ function Register() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSubmit),
       });
-
       const result = await response.json();
-
       if (response.ok) {
-        // ✅ Registration successful, redirect to donate page
         router.push("/donatePage");
       } else {
         alert(result.error || "Registration failed.");
@@ -104,7 +141,7 @@ function Register() {
     }
   };
 
-  // ======================= GOOGLE LOGIN ======================
+  // Google Sign-In
   const handleGoogleCallback = async (response) => {
     try {
       const payload = JSON.parse(atob(response.credential.split(".")[1]));
@@ -114,18 +151,14 @@ function Register() {
         email: payload.email,
         avatar: payload.picture,
       };
-
       const res = await fetch("/api/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(googleData),
       });
-
       const result = await res.json();
-
       if (res.ok) {
         localStorage.setItem("user", JSON.stringify(result.user));
-        alert(`✅ Welcome ${result.user.name}!`);
         window.location.href = "/dashboard";
       } else {
         alert(result.error || "Google Sign-In failed.");
@@ -138,109 +171,78 @@ function Register() {
 
   const initGoogle = () => {
     if (window.googleInitialized) return;
-    if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
+    if (!window.google?.accounts?.id) return;
 
     window.googleInitialized = true;
-
     window.google.accounts.id.initialize({
       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
       callback: handleGoogleCallback,
-      auto_select: false, // ❌ Prevent FedCM auto-select on dev
-      cancel_on_tap_outside: false,
     });
   };
 
   const handleGoogleSignIn = () => {
-    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
-      alert("Google Sign-In is still loading...");
+    if (!window.google?.accounts?.id) {
+      alert("Google Sign-In is loading...");
       return;
     }
-
-    try {
-      initGoogle();
-      window.google.accounts.id.prompt(); // show One Tap or chooser
-    } catch (err) {
-      console.error("Google Sign-In error:", err);
-      alert("Google Sign-In failed.");
-    }
+    initGoogle();
+    window.google.accounts.id.prompt();
   };
 
-  // ======================= INPUT HANDLERS ======================
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (name === "phone") {
-      return setFormData((prev) => ({
-        ...prev,
-        phone: value.replace(/[^0-9]/g, ""),
-      }));
-    }
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-    setShowDropdown(true);
-
-    if (!val.trim()) {
-      setFilteredCountries(countryCodes);
-      return;
-    }
-
-    setFilteredCountries(
-      countryCodes.filter(
-        (country) =>
-          country.name.toLowerCase().startsWith(val.toLowerCase()) ||
-          country.dialCode.includes(val)
-      )
-    );
-  };
-
-  const handleCountrySelect = (country) => {
-    setFormData((prev) => ({
-      ...prev,
-      countryCode: country.dialCode,
-      countryName: country.name,
-    }));
-    setSearchTerm(country.name);
-    setShowDropdown(false);
-  };
-
-  // ======================= UI ======================
   return (
     <>
-      {/* Google Sign-In script */}
-      <Script
-        src="https://accounts.google.com/gsi/client"
-        strategy="afterInteractive"
-      />
+      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
 
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-blue-50 p-4">
-        <div className="w-full max-w-lg bg-white shadow-xl p-8 rounded-xl">
-          <h1 className="text-3xl font-bold text-center mb-2">Create Account</h1>
-          <p className="text-center text-gray-500 mb-6">Register to get started</p>
+      <div className="min-h-screen flex items-center justify-center bg-soft-gray p-4">
+        <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 md:p-12 border border-gray-100">
+          <h1 className="text-3xl font-extrabold text-text-primary text-center mb-2">Create Account</h1>
+         
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+         
+
+         
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <input
               name="name"
               value={formData.name}
               onChange={handleChange}
               required
-              placeholder="Full name"
-              className="w-full p-3 border rounded-lg"
+              placeholder="Full Name"
+              className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"
             />
-            <div className="flex gap-2">
-              <input
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={() => setShowDropdown(true)}
-                disabled={loading}
-                placeholder="Search country"
-                className="w-40 p-3 border rounded-lg"
-              />
+
+            {/* Country Code + Phone */}
+            <div className="flex flex-col md:flex-row gap-2 relative">
+              <div className="relative w-full md:w-36">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => setShowDropdown(true)}
+                  placeholder="Type country..."
+                  className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"
+                />
+                {showDropdown && (
+                  <div className="absolute z-50 w-full max-h-48 overflow-y-auto mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                    {filteredCountries.length > 0 ? (
+                      filteredCountries.map((c) => (
+                        <div
+                          key={c.code}
+                          onClick={() => handleCountrySelect(c)}
+                          className="cursor-pointer p-2 flex justify-between hover:bg-gray-100"
+                        >
+                          <span>{c.name}</span>
+                          <span>{c.dialCode}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="p-2 text-gray-400">No countries found</div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <input
                 name="phone"
                 value={formData.phone}
@@ -251,29 +253,14 @@ function Register() {
               />
             </div>
 
-            {showDropdown && (
-              <div className="border max-h-40 overflow-y-auto rounded">
-                {filteredCountries.map((country) => (
-                  <div
-                    key={country.code}
-                    onClick={() => handleCountrySelect(country)}
-                    className="cursor-pointer p-2 flex justify-between hover:bg-gray-100"
-                  >
-                    <span>{country.name}</span>
-                    <span>{country.dialCode}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
             <input
               type="email"
               name="email"
-              placeholder="Email address"
+              placeholder="Email"
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg"
+              className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"
             />
             <input
               type="password"
@@ -283,17 +270,17 @@ function Register() {
               minLength={8}
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg"
+              className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"
             />
             <input
               type="password"
               name="confirmPassword"
-              placeholder="Confirm password"
+              placeholder="Confirm Password"
               required
               minLength={8}
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg"
+              className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150"
             />
 
             <label className="flex items-center gap-2 text-sm">
@@ -303,7 +290,10 @@ function Register() {
                 checked={formData.terms}
                 onChange={handleChange}
               />
-              I agree to the Terms & Conditions
+              I agree to the{" "}
+              <a href="#" className="text-primary-teal hover:text-action-blue font-medium">
+                Terms & Conditions
+              </a>
             </label>
 
             <button
@@ -311,7 +301,7 @@ function Register() {
               disabled={!isFormReady}
               className={`w-full py-3 rounded-lg font-semibold transition ${
                 isFormReady
-                  ? "bg-[#2BB0A8] text-white hover:bg-teal-600"
+                  ? "bg-[#2BB0A8] text-white hover:bg-[#208a82]"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
@@ -319,14 +309,12 @@ function Register() {
             </button>
           </form>
 
-          <div className="my-6 text-center text-gray-400">OR</div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full py-3 border rounded-lg hover:bg-gray-50"
-          >
-            Sign up with Google
-          </button>
+          <div className="text-center mt-6 text-text-secondary">
+            Already have an account?{" "}
+            <a href="/loginPage" className="text-primary-teal hover:text-action-blue font-medium">
+              Sign In
+            </a>
+          </div>
         </div>
       </div>
     </>

@@ -1,28 +1,54 @@
 "use client";
-
 import Link from "next/link";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 
+export default function Navbar() {
+  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
 
-function Navbar() {
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    setIsLoggedIn(false);
+  };
+
   return (
-   <div>
-        <nav className="navbar ">
-            <div className="container-fluid">
-                <div className="nav-logo">
-                    <Link  href="#" className="navbar-brand ">CareVia</Link>
-                </div>
-                <div className="d-flex btns" role="search">
-                    <div className="register">
-                        <button className="btn-register">Register</button>
-                    </div>
-                    <div className="login">
-                       <button className="btn-login">Login</button>
-                    </div>
-                </div>
-            </div>
-        </nav>
-   </div>
-  )
+    <nav className="navbar">
+      <div className="container-fluid">
+        <div className="nav-logo">
+          <Link href="/" className="navbar-brand">
+            CareVia
+          </Link>
+        </div>
+        <div className="d-flex btns" role="search">
+          {isLoggedIn ? (
+            <>
+              <div className="donate">
+                <Link href="/donatePage">
+                  <button className="btn-donate">Donate</button>
+                </Link>
+              </div>
+              <div className="logout">
+                <button className="btn-logout" onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="register">
+                <Link href="/registerPage">
+                  <button className="btn-register">Register</button>
+                </Link>
+              </div>
+              <div className="login">
+                <Link href="/loginPage">
+                  <button className="btn-login">Login</button>
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 }
-
-export default Navbar
