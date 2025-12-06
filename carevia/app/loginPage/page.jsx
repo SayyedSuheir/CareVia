@@ -4,7 +4,7 @@ import Login from "../components/Login";
 
 
 
-function page() {
+function LoginPage() {
   return (
     <div>
         <Login/>
@@ -12,4 +12,4 @@ function page() {
   )
 }
 
-export default page
+export default LoginPage;

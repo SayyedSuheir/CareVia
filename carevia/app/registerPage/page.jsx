@@ -1,7 +1,8 @@
+"use client";
 import Register from "../components/Register"
 
 
-function page() {
+function RegisterPage() {
   
   return (
     <div>
@@ -10,4 +11,4 @@ function page() {
   )
 }
 
-export default page
+export default RegisterPage;

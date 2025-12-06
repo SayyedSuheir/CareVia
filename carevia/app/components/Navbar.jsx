@@ -1,14 +1,32 @@
 "use client";
 import Link from "next/link";
 import { useContext } from "react";
+import { useRouter } from "next/navigation";
 import { UserContext } from "./UserContext";
 
 export default function Navbar() {
-  const { isLoggedIn, setIsLoggedIn } = useContext(UserContext);
+ 
+  const router = useRouter();
+  const { user, isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
 
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    setIsLoggedIn(false);
+
+
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setIsLoggedIn(false);
+        setUser(null);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -50,5 +68,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  );
-}
+  )
+};
