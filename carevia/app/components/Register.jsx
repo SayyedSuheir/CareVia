@@ -3,7 +3,7 @@
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../_context/UserContext";
 
 function Register() {
   const router = useRouter();

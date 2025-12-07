@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../_context/UserContext";
 
 export default function Navbar() {
  
@@ -40,6 +40,11 @@ export default function Navbar() {
         <div className="d-flex btns" role="search">
           {isLoggedIn ? (
             <>
+               <div className="mydonation">
+                <Link href="/myDonation">
+                  <button className="btn-donate">My Donatation</button>
+                </Link>
+              </div>
               <div className="donate">
                 <Link href="/donatePage">
                   <button className="btn-donate">Donate</button>

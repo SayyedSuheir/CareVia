@@ -1,7 +1,7 @@
 "use client"; 
 import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { UserContext } from "./UserContext";
+import { UserContext } from "../_context/UserContext";
 
 export default function Login() {
   const router = useRouter();

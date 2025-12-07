@@ -1,14 +1,16 @@
 "use client";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Card from '../components/Card';
+import PostForm from '@/app/components/PostForm';
+
+
 
 function page() {
   return (
     <div>
         
         <main>
-          <Card/>
+          <PostForm />
         </main>
     </div>
   )
