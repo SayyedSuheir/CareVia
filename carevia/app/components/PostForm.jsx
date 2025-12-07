@@ -6,7 +6,8 @@ import { useAuth } from '@/app/_context/useAuth';
 import { useRouter } from 'next/navigation';
 
 const PostFormWithImage = () => {
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { user, isLoggedIn, loading: authLoading } = useAuth();
+  console.log(user);
   const router = useRouter();
   
   // Form data state
@@ -73,7 +74,7 @@ const PostFormWithImage = () => {
       dataToSend.append('description', formData.description);
       dataToSend.append('Type', formData.Type);
       dataToSend.append('image', imageFile);
-
+      
       // Send to API
       const res = await fetch('/api/postsaction/createPost', {
         method: 'POST',
@@ -210,22 +211,36 @@ const PostFormWithImage = () => {
         )}
 
         {/* Address */}
-        <div>
-          <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-1">
-            Pickup Address *
-          </label>
-          <input
-            type="text"
-            name="address"
-            id="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="Full address for item pickup"
-            required
-            minLength={5}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-          />
+        <div className="relative mt-1">
+            <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-1">
+                Pickup Address *
+            </label>
+            <input
+                type="text"
+                name="address"
+                id="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Full address for item pickup"
+                required
+                minLength={5}
+                className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            />
+
+            {/* Add Phone button */}
+            {user?.phoneNumber && !formData.address.includes(user.phoneNumber) && (
+                <button
+                type="button"
+                onClick={() =>
+                    setFormData(prev => ({ ...prev, address: `${prev.address} - ${user.phoneNumber}` }))
+                }
+                className="absolute right-2 top-9 bg-indigo-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-indigo-700 transition"
+                >
+                Add Phone
+                </button>
+            )}
         </div>
+
 
         {/* Description */}
         <div>

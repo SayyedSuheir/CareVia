@@ -33,6 +33,7 @@ export async function GET(request) {
       user: {
         id: decoded.userId,
         email: decoded.email,
+        phoneNumber: decoded.phoneNumber,
         role: decoded.role,
       },
     });

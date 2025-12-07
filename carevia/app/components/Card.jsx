@@ -4,24 +4,31 @@ import Image from "next/image";
 import { useAuth } from "@/app/_context/useAuth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 function Card() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
+
+  const pathname = usePathname();
+const isHome = pathname === "/";
+
   const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   // Fetch user's posts when logged in
-  useEffect(() => {
-    const fetchUserPosts = async () => {
-      if (!isLoggedIn) {
-        setLoading(false);
-        return;
-      }
+ useEffect(() => {
+  const fetchPosts = async () => {
+    try {
+      if (!authLoading) {
 
-      try {
-        const res = await fetch("/api/postsaction/user", {
+        // ✅ Choose endpoint ONLY based on URL
+        const endpoint = isHome
+          ? "/api/postsaction/all"      // Home = all posts
+          : "/api/postsaction/user";   // Other pages = user's posts
+
+        const res = await fetch(endpoint, {
           credentials: "include",
         });
 
@@ -32,18 +39,19 @@ function Card() {
         } else {
           setError(data.error);
         }
-      } catch (err) {
-        console.error("Fetch posts error:", err);
-        setError("Failed to load posts");
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    if (!authLoading) {
-      fetchUserPosts();
+      }
+    } catch (err) {
+      console.error("Fetch posts error:", err);
+      setError("Failed to load posts");
+    } finally {
+      setLoading(false);
     }
-  }, [isLoggedIn, authLoading]);
+  };
+
+  fetchPosts();
+}, [authLoading, isHome]);
+
 
   // Handle post deletion
   const handleDelete = async (postId) => {
@@ -79,18 +87,19 @@ function Card() {
   }
 
   // Not logged in state
-  if (!isLoggedIn) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-xl text-gray-600 mb-4">Please login to see your posts</p>
-          <a href="/loginPage" className="text-indigo-600 hover:underline">
-            Go to Login
-          </a>
-        </div>
+ if (!isLoggedIn && !isHome) {
+  return (
+    <div className="flex justify-center items-center min-h-[400px]">
+      <div className="text-center">
+        <p className="text-xl text-gray-600 mb-4">Please login to see your posts</p>
+        <a href="/loginPage" className="text-indigo-600 hover:underline">
+          Go to Login
+        </a>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   // Error state
   if (error) {
@@ -121,9 +130,12 @@ function Card() {
   // Display user's posts
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        My Posts ({posts.length})
-      </h2>
+      {!isHome && (
+            <h2 className="text-3xl font-bold mb-6 text-center">
+                My Posts ({posts.length})
+            </h2>
+        )}
+
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => (
@@ -188,20 +200,39 @@ function Card() {
               </p>
 
               {/* Action Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleDelete(post.id)}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => router.push(`/editmypage/${post.id}`)}
-                  className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200"
-                >
-                  Edit
-                </button>
-              </div>
+             
+                <div className="flex gap-2">
+
+                        {isHome ? (
+                            // ✅ Button visible ONLY on homepage
+                            <button
+                            onClick={() => router.push(`/post/${post.id}`)}
+                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
+                            >
+                            Need It
+                            </button>
+                        ) : (
+                            // ✅ Buttons visible ONLY outside homepage
+                            <>
+                            <button
+                                onClick={() => handleDelete(post.id)}
+                                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold"
+                            >
+                                Delete
+                            </button>
+
+                            <button
+                                onClick={() => router.push(`/editmypage/${post.id}`)}
+                                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold"
+                            >
+                                Edit
+                            </button>
+                            </>
+                        )}
+
+                </div>
+
+              
             </div>
           </div>
         ))}
