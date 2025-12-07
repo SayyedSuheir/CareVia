@@ -34,7 +34,7 @@ export default function Navbar() {
       <div className="container-fluid">
         <div className="nav-logo">
           <Link href="/" className="navbar-brand">
-            CareVia
+            <span style={{color:'white'}}>Care</span><span style={{color:'gold'}}>Via</span>
           </Link>
         </div>
         <div className="d-flex btns" role="search">
@@ -42,7 +42,7 @@ export default function Navbar() {
             <>
                <div className="mydonation">
                 <Link href="/myDonation">
-                  <button className="btn-donate">My Donatation</button>
+                  <button className="btn-donate">Achievments</button>
                 </Link>
               </div>
               <div className="donate">
@@ -51,10 +51,11 @@ export default function Navbar() {
                 </Link>
               </div>
               <div className="logout">
-                <button className="btn-logout" onClick={handleLogout}>
+                <button className="btn-logout " onClick={handleLogout}>
                   Logout
                 </button>
               </div>
+              
             </>
           ) : (
             <>

@@ -7,10 +7,12 @@ import { UserProvider } from './_context/UserContext'
 import Navbar from "./components/Navbar";
 
 
+
 export default function RootLayout({ children }) {
+  
   return (
-    <html lang="en">
-      <body
+    <html lang="en" >
+      <body 
        
       >
       <UserProvider>
