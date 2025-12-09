@@ -1,6 +1,7 @@
 "use client";
 
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import BootstrapClient from "./providers";
 import "./globals.css";
 
 import { UserProvider } from './_context/UserContext'
@@ -17,7 +18,8 @@ export default function RootLayout({ children }) {
       >
       <UserProvider>
         
-          <Navbar/>
+        <BootstrapClient />
+        <Navbar/>
          
          {children}
         </UserProvider>

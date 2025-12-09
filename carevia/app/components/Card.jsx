@@ -136,108 +136,119 @@ const isHome = pathname === "/";
             </h2>
         )}
 
+     
+
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
         {posts.map((post) => (
-          <div
-            key={post.id}
-            className="product-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-          >
-            {/* Image Container */}
-            <div className="image-container relative h-64 bg-gray-200">
-              <Image
-                src={post.image || "/defaultGoods.png"}
-                alt={post.name}
-                width={300}
-                height={300}
-                className="object-cover"
-              />
-              {/* Category Badge */}
-              <div className="absolute top-2 right-2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                {post.Type}
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
-              {/* Title */}
-              <h2 className="item-title text-xl font-bold mb-2 capitalize">
-                {post.name}
-              </h2>
-
-              {/* Description */}
-              <p className="text-base text-gray-600 mb-4 line-clamp-3">
-                {post.description}
-              </p>
-
-              {/* Address */}
-              <div className="flex items-center text-sm text-gray-500 mb-4">
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span className="truncate">{post.address}</span>
+          
+            <div
+              key={post.id}
+              className="product-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+            >
+            <div className="card ">
+              {/* Image Container */}
+              <div className="image-container relative h-64 bg-gray-200">
+                <Image
+                  src={post.image || "/defaultGoods.png"}
+                  alt={post.name}
+                  width={300}
+                  height={300}
+                 
+                  className="object-cover"
+                />
+                {/* Category Badge */}
+                <div className="absolute top-2 right-2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  {post.Type}
+                </div>
               </div>
 
-              {/* Date */}
-              <p className="text-xs text-gray-400 mb-4">
-                Posted: {new Date(post.createdAt).toLocaleDateString()}
-              </p>
+              {/* Content */}
+              <div className="card-body p-6">
+                {/* Title */}
+                <h2 className="card-title item-title text-xl font-bold mb-2 capitalize">
+                  {post.name}
+                </h2>
 
-              {/* Action Buttons */}
-             
-                <div className="flex gap-2">
+                {/* Description */}
+                <p className="card-text text-base text-gray-600 mb-4 line-clamp-3">
+                  {post.description}
+                </p>
 
-                        {isHome ? (
-                            // ✅ Button visible ONLY on homepage
-                            <button
-                            onClick={() => router.push(`/post/${post.id}`)}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
-                            >
-                            Need It
-                            </button>
-                        ) : (
-                            // ✅ Buttons visible ONLY outside homepage
-                            <>
-                            <button
-                                onClick={() => handleDelete(post.id)}
-                                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold"
-                            >
-                                Delete
-                            </button>
-
-                            <button
-                                onClick={() => router.push(`/editmypage/${post.id}`)}
-                                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold"
-                            >
-                                Edit
-                            </button>
-                            </>
-                        )}
-
+                {/* Address */}
+                <div className="citem-address flex items-center text-sm text-gray-500 mb-4">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    width={20}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <span className="truncate">{post.address}</span>
                 </div>
 
+                {/* Date */}
+                <p className="text-xs text-gray-400 mb-4">
+                  Posted: {new Date(post.createdAt).toLocaleDateString()}
+                </p>
+                </div>
+                {/* Action Buttons */}
               
+                  <div className="card-footer btn  flex gap-2">
+
+                          {isHome ? (
+                              // ✅ Button visible ONLY on homepage
+                              <button
+                              onClick={() => router.push(`/post/${post.id}`)}
+                              className="btn-primary w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
+                              >
+                              Need It
+                              </button>
+                          ) : (
+                              // ✅ Buttons visible ONLY outside homepage
+                              <div className="mydonation-controles">
+                                <div className="btn-delete">
+                                <button
+                                    onClick={() => handleDelete(post.id)}
+                                    className="  btn-primary flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold"
+                                >
+                                    Delete
+                                </button>
+                              </div>
+                            <div className="btn-edit">
+                              <button
+                                  onClick={() => router.push(`/editmypage/${post.id}`)}
+                                  className="btn-primary flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold"
+                              >
+                                  Edit
+                              </button>
+                              </div>
+                              </div>
+
+                          )}
+
+                  </div>
+
+                
+              </div>
             </div>
-          </div>
+           
         ))}
       </div>
-    </div>
+   
   );
 }
 

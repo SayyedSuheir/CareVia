@@ -30,49 +30,66 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbar bg-body-tertiary fixed-top">
       <div className="container-fluid">
         <div className="nav-logo">
           <Link href="/" className="navbar-brand">
             <span style={{color:'white'}}>Care</span><span style={{color:'gold'}}>Via</span>
           </Link>
         </div>
-        <div className="d-flex btns" role="search">
-          {isLoggedIn ? (
-            <>
-               <div className="mydonation">
-                <Link href="/myDonation">
-                  <button className="btn-donate">Achievments</button>
-                </Link>
-              </div>
-              <div className="donate">
-                <Link href="/donatePage">
-                  <button className="btn-donate">Donate</button>
-                </Link>
-              </div>
-              <div className="logout">
-                <button className="btn-logout " onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
+          {/* <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" role="search">
+             <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon"></span>
+              </button>
+              <div className="offcanvas-header">
+                <h5 className="offcanvas-title" id="offcanvasNavbarLabel">Welcome</h5>
+                <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div> */}
+            {isLoggedIn ? (
+              <>
+               <div className="offcanvas-body">
+                <div className="mydonation ">
+                  <Link href="/myDonation">
+                    Achievments
+                  </Link>
+                </div>
+                <div className="donate">
+                  <Link href="/donatePage">
+                    Donate
+                  </Link>
+                </div>
+                <div className="logout">
+                  <button className="btn-logout " onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
+                </div>
               
-            </>
-          ) : (
+            
+              
+           
+            
+              </>
+            
+          ) 
+          : (
             <>
+            <div className="btns">
               <div className="register">
                 <Link href="/registerPage">
-                  <button className="btn-register">Register</button>
+                 Register
                 </Link>
               </div>
               <div className="login">
                 <Link href="/loginPage">
-                  <button className="btn-login">Login</button>
+                 Login
                 </Link>
               </div>
+            </div>
             </>
           )}
         </div>
-      </div>
+       {/* </div> */}
     </nav>
   )
 };

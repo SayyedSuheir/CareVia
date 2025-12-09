@@ -1,11 +1,8 @@
 /* 1️⃣ Bootstrap first */
-@import "bootstrap/dist/css/bootstrap.min.css";
+/* @import "bootstrap/dist/css/bootstrap.min.css"; */
 
 
-/* 2️⃣ Tailwind directives */
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
+
 
 
 /* 3️⃣ Custom colors */
@@ -17,22 +14,38 @@
   --color-medium-gray: #6b7280;
  
 }
+body{
+  width:100%;
+  height: 100vh;
+  background-color: var(--color-light-gray);
+  display: flex;
+  flex-direction: column;
+ 
+}
 
 /* 4️⃣ Custom card styles */
 .product-card {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05);
-  border-radius: 20px;
-  max-width: 320px;
-  width: 90%;
-  overflow: hidden;
+  /* border-radius: 20px; */
+  /* max-width: 320px; */
+  width: 100%;
+  /* overflow: hidden; */
+  display: flex;
+  justify-content: center;
+
+ 
+ 
 }
 
 /* 5️⃣ Buttons */
 .btn-primary {
+  
   background-color: var(--color-primary);
   color: white;
   transition: all 0.2s ease;
   box-shadow: 0 4px 10px rgba(43, 176, 168, 0.3);
+  border:none;
+
 }
 
 .btn-primary:hover {
@@ -42,18 +55,26 @@
 
 /* 6️⃣ Image container */
 .image-container {
-  background-color: var(--color-light-gray);
-  height: 200px;
-  padding: 1rem;
+  /* background-color: var(--color-light-gray); */
+  height: 100%;
+   width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+ background-color: var(--color-primary);
+ 
+  
+  
 }
 
 .image-container img {
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  object-fit: contain; /* ensures image fits without distortion */
+  /* border-radius: 1px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
+  object-fit:cover; /* ensures image fits without distortion */
   width: 100%;
-  height: 100%;
-}
+  height: 100%; 
+  
+ } 
 
 /* 7️⃣ Title underline */
 .item-title {
@@ -66,6 +87,7 @@
 
 /* 8️⃣ Navbar */
 .navbar {
+  width:100%;
   background-color: var(--color-primary) !important;
 }
 
@@ -77,10 +99,24 @@
 .nav-logo {
   width:30%;
 }
+/* navbar links */
+
 .btns {
   width: 70%;
   display: flex;
-  gap:1%;
+  justify-content: end;
+  
+}
+
+.register a, .login a{
+  text-decoration: none;
+  color:white;
+}
+/* after login navbar styling */
+.offcanvas-body{
+  width:70%;
+  display: flex;
+
 }
 
 .register,
@@ -89,40 +125,127 @@
 .donate,
 .logout  {
   width: 40%;
+  display: flex;
+  justify-content: center;
   
 }
 .register button,
-.login button,
-.mydonation button,
-.donate button,
-.logout button {
+.login button
+ {
+ 
   width:100%;
   color:white;
   
+}
+.mydonation a ,
+.donate a 
+{
+
+  text-decoration: none;
+  color:white;
+}
+.logout button{
+  width:100%;
+  color: white;
+  border: none;
+  background: transparent;
 }
 /* button css */
 
 /* CSS */
 .register button,
-.login button,
-.mydonation button,
-.donate button,
-.logout button {
+.login button
+
+{
   font-family: var(--font-eb-garamond), serif;
   font-size: 0.9rem;
-  height: 5vh;
+ background: transparent;
   width: 100%;
   text-align: center;
   cursor: pointer;
   user-select: none;
-  border: 0;
-  border-radius: 4%;
-  box-shadow: rgba(0,0,0,.3) 0 5% 15%;
-  background-image: linear-gradient(#0dccea, #0d70ea);
+  border: none;
+  
+ 
+  
   color: #fff;
-  touch-action: manipulation;
+  
 }
 
 .donate button {
   color: gold !important;
+}
+/* cards styling */
+.citem-address{
+display: flex;
+
+}
+.container{
+  
+  display: flex;
+  flex-direction: column;
+  
+  align-items: center;
+  margin-top: 15%;
+  
+}
+.card{
+  display: flex;
+  gap:5%;
+  margin-top: 5%;
+  align-items: center;
+  width:18rem;
+  border-color: #FFC857;
+  height:100%;
+  
+
+  
+
+}
+.card-body{
+  width: 100%;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  
+
+}
+.card-footer{
+  width:100%;
+  height:20vh;
+  background: transparent;
+}
+.card-items{
+  display: flex;
+  justify-content: center;
+
+  
+}
+.btn{
+  width:100%;
+  height: 10vh;
+}
+.mydonation-controles{
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+}
+.btn-delete{
+  
+  width: 40%;
+  
+  
+  
+}
+.btn-delete button{
+  background-color: red;
+}
+.btn-edit{
+  width:60%;
+  display: flex;
+  justify-content: end;
+}
+.btn-edit button{
+  width:90%;
 }
