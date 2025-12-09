@@ -186,11 +186,13 @@ const handleSubmit = async (e) => {
 
   return (
     <>
-      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
+      {/* <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" /> */}
 
-      <div className="min-h-screen flex items-center justify-center bg-soft-gray p-4">
-        <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 md:p-12 border border-gray-100">
-          <h1 className="text-3xl font-extrabold text-text-primary text-center mb-6">Create Account</h1>
+      <div className="reg-container">
+        
+          <h1 className="reg-title">
+            Create Account
+          </h1>
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
@@ -204,8 +206,8 @@ const handleSubmit = async (e) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
+          <form onSubmit={handleSubmit} className="reg-form">
+            <div className="reg-fname">
               <label htmlFor="name" className="block text-sm font-medium text-text-primary mb-1">
                 Full Name
               </label>
@@ -221,11 +223,14 @@ const handleSubmit = async (e) => {
               />
             </div>
 
-            <div className="flex flex-col md:flex-row gap-2">
-              <div className="relative w-full md:w-36 country-dropdown-container">
+            <div className="reg-phone-devs">
+              <div className=" reg-c-code">
                 <label htmlFor="country" className="block text-sm font-medium text-text-primary mb-1">
-                  Country Code
+                   Phone Number
                 </label>
+                </div>
+                <div className="reg-phonenumber">
+                <div className="country-code country-dropdown-container">
                 <input
                   id="country"
                   type="text"
@@ -233,48 +238,52 @@ const handleSubmit = async (e) => {
                   onChange={handleSearchChange}
                   onFocus={() => !isSubmitting && setShowDropdown(true)}
                   disabled={isSubmitting || loading}
-                  placeholder="Search..."
+                  placeholder="Search country code"
                   className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
                 {showDropdown && !isSubmitting && (
-                  <div className="absolute z-50 w-64 md:w-80 max-h-48 overflow-y-auto mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                  <div className="country-code-dropdown">
                     {filteredCountries.length > 0 ? (
                       filteredCountries.map((c) => (
                         <div
                           key={c.code}
                           onClick={() => handleCountrySelect(c)}
-                          className="cursor-pointer p-2 flex justify-between hover:bg-gray-100 text-sm"
+                          className="country-item"
                         >
-                          <span className="truncate">{c.name}</span>
-                          <span className="ml-2 font-mono text-gray-600">{c.dialCode}</span>
+                          <span className="country-name">{c.name}</span>
+                          <span className="country-code">{c.dialCode}</span>
                         </div>
                       ))
                     ) : (
-                      <div className="p-2 text-gray-400 text-sm">No countries found</div>
+                      <div className="no-results">No countries found</div>
                     )}
                   </div>
+                  
                 )}
-              </div>
+                </div> 
+              
 
-              <div className="flex-1">
-                <label htmlFor="phone" className="block text-sm font-medium text-text-primary mb-1">
+              
+                {/* <label htmlFor="phone" className="block text-sm font-medium text-text-primary mb-1">
                   Phone Number
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="123456789"
-                  required
-                  disabled={isSubmitting}
-                  className="w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed"
-                />
+                </label> */}
+                <div className="reg-phone-input">
+                  <input
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="123456789"
+                    required
+                    disabled={isSubmitting}
+                    className="phone-input"
+                  />
+                </div>
               </div>
             </div>
 
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-1">
+            <div className="reg-email">
+              <label htmlFor="email" >
                 Email Address
               </label>
               <input
@@ -290,7 +299,7 @@ const handleSubmit = async (e) => {
               />
             </div>
 
-            <div>
+            <div className="reg-password">
               <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-1">
                 Password
               </label>
@@ -308,7 +317,7 @@ const handleSubmit = async (e) => {
               />
             </div>
 
-            <div>
+            <div className="reg-confirm-password">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-primary mb-1">
                 Confirm Password
               </label>
@@ -330,45 +339,47 @@ const handleSubmit = async (e) => {
                 <p className="mt-1 text-sm text-red-600">{passwordError}</p>
               )}
             </div>
-
-            <label className="flex items-start gap-2 text-sm">
-              <input
-                type="checkbox"
-                name="terms"
-                checked={formData.terms}
-                onChange={handleChange}
-                disabled={isSubmitting}
-                className="mt-1 disabled:cursor-not-allowed"
-              />
-              <span className="text-text-secondary">
-                I agree to the{" "}
-                <a href="/terms" className="text-primary-teal hover:text-action-blue font-medium">
-                  Terms & Conditions
-                </a>
-              </span>
-            </label>
-
-            <button
-              type="submit"
-              disabled={!isFormReady}
-              className={`w-full py-3 rounded-lg font-semibold transition shadow-md ${
-                isFormReady
-                  ? "bg-[#2BB0A8] text-white hover:bg-[#208a82] shadow-[#2BB0A8]/40"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
-              }`}
-            >
-              {isSubmitting ? "Creating Account..." : "Register"}
-            </button>
+            <div className="reg-terms">
+                <label className="reg-checkbox">
+                  <input
+                    type="checkbox"
+                    name="terms"
+                    checked={formData.terms}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
+                    className="mt-1 disabled:cursor-not-allowed"
+                  />
+                  <span className="text-text-secondary">
+                    I agree to the{" "}
+                    <a href="/terms" className="terms-link">
+                      Terms & Conditions
+                    </a>
+                  </span>
+                </label>
+            </div>
+            <div className="reg-btn">
+              <button
+                type="submit"
+                disabled={!isFormReady}
+                className={`btn-primary ${
+                  isFormReady
+                    ? "bg-[#2BB0A8] text-white hover:bg-[#208a82] shadow-[#2BB0A8]/40"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+                }`}
+              >
+                {isSubmitting ? "Creating Account..." : "Register"}
+              </button>
+            </div>
           </form>
 
-          <div className="text-center mt-6 text-text-secondary text-sm">
+          <div className="reg-footer">
             Already have an account?{" "}
-            <a href="/loginPage" className="text-primary-teal hover:text-action-blue font-medium">
+            <a href="/loginPage" className="terms-link">
               Sign In
             </a>
           </div>
         </div>
-      </div>
+      
     </>
   );
 }
