@@ -122,10 +122,10 @@ const PostFormWithImage = () => {
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-          <p className="mb-4">Please login to create a post</p>
+          <p className="reg-terms ">Please login to create a post</p>
           <button
             onClick={() => router.push('/loginPage')}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+            className="btn-primary reg-btn bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
           >
             Go to Login
           </button>

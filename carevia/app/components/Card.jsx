@@ -92,7 +92,7 @@ const isHome = pathname === "/";
     <div className="flex justify-center items-center min-h-[400px]">
       <div className="text-center">
         <p className="text-xl text-gray-600 mb-4">Please login to see your posts</p>
-        <a href="/loginPage" className="text-indigo-600 hover:underline">
+        <a href="/loginPage" className="terms-link text-indigo-600 hover:underline">
           Go to Login
         </a>
       </div>

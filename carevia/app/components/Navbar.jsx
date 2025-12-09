@@ -10,7 +10,17 @@ export default function Navbar() {
   const router = useRouter();
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
 
+  // canvas close
+  const closeOffcanvas = () => {
+  const offcanvasEl = document.getElementById("offcanvasNavbar");
+  if (!offcanvasEl) return;
 
+  const instance =
+    window.bootstrap?.Offcanvas.getInstance(offcanvasEl) ||
+    new window.bootstrap.Offcanvas(offcanvasEl);
+
+  instance.hide();
+};
 
 
   const handleLogout = async () => {
@@ -75,11 +85,11 @@ export default function Navbar() {
 
             <div className="offcanvas-body">
               <div className="mydonation ">
-                <Link href="/myDonation">Achievments</Link>
+                <Link href="/myDonation" onClick={closeOffcanvas} >Achievments</Link>
               </div>
 
               <div className="donate">
-                <Link href="/donatePage"  >Donate</Link>
+                <Link href="/donatePage" onClick={closeOffcanvas} >Donate</Link>
               </div>
 
               <div className="logout">
