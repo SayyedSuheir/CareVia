@@ -113,17 +113,43 @@ body{
   color:white;
 }
 /* after login navbar styling */
-.offcanvas-body{
-  width:70%;
+.offcanvas-header{
   display: flex;
+  color: #1a8f87;
+ width: 100%;
+  
+}
+.offcanvas-title{
+  display: flex;
+  justify-content: center;
+  width:90%;
+}
+.offcanvas-body{
+  background-color: var(--color-primary);
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 
+}
+.mydonation,
+.donate,
+.logout {
+  width:100%;
+  height: 33.33%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.donate a{
+  color:#FFC857 !important;
+  font-weight: 700;
 }
 
 .register,
-.login,
-.mydonation,
-.donate,
-.logout  {
+.login
+ {
   width: 40%;
   display: flex;
   justify-content: center;
@@ -248,4 +274,64 @@ display: flex;
 }
 .btn-edit button{
   width:90%;
+}
+/* login-form */
+.login-form-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  width: 100%;
+  
+  height: 100vh;
+}
+.head-login-form{
+  width:80%;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height:80%;
+}
+.login-welcome{
+  width: 100%;
+  height: 10%;
+  color:var(--color-primary);
+ 
+}
+.login-form{
+  color:var(--color-primary);
+  width: 100%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.email-section, .password-section{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  
+
+}
+.login-footer{
+  height: 10%;
+  color:var(--color-primary);
+}
+.login-footer a{
+text-decoration: none;
+color: #1f2937;
+font-weight: 700;
+}
+.sign-btn-container{
+  width:100%;
+  display: flex;
+  justify-content: center;
+}
+.btn-signin{
+  width:90% !important;
+  height: 10vh;
 }

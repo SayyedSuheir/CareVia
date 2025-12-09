@@ -43,10 +43,10 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-soft-gray min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl overflow-hidden p-8 md:p-10 border border-gray-100">
+    <div className="login-form-container">
+      <div className="head-login-form">
 
-        <div className="text-center mb-10">
+        <div className="login-welcome text-center mb-10">
           <h1 className="text-3xl font-extrabold text-text-primary mt-2">Welcome To CareVia</h1>
         </div>
 
@@ -56,9 +56,9 @@ export default function Login() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="login-form">
 
-          <div>
+          <div className="email-section">
             <label htmlFor="email" className="block text-sm font-medium text-text-primary mb-1">
               Email Address
             </label>
@@ -75,7 +75,7 @@ export default function Login() {
             />
           </div>
 
-          <div>
+          <div className="password-section">
             <label htmlFor="password" className="block text-sm font-medium text-text-primary mb-1">
               Password
             </label>
@@ -91,17 +91,18 @@ export default function Login() {
               className="form-input w-full p-3 border border-gray-300 rounded-lg placeholder-text-secondary focus:ring-0 focus:outline-none focus:border-primary-teal transition duration-150 disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
-
+        <div className="sign-btn-container">
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-[#2BB0A8] text-white font-bold rounded-lg hover:bg-[#208a82] focus:outline-none focus:ring-4 focus:ring-primary-teal focus:ring-opacity-50 transition duration-150 shadow-md shadow-[#2BB0A8]/40 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none"
+            className="btn-primary btn-signin"
           >
             {isLoading ? "Signing In..." : "Sign In"}
           </button>
+        </div>
         </form>
 
-        <div className="text-center mt-8">
+        <div className="login-footer">
           <p className="text-text-secondary text-sm">
             Don't have an account?{" "}
             <a href="/registerPage" className="text-primary-teal hover:text-action-blue font-medium transition duration-150">
