@@ -21,6 +21,7 @@ const PostFormWithImage = () => {
   // Image state
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   
   // UI state
   const [loading, setLoading] = useState(false);
@@ -134,12 +135,12 @@ const PostFormWithImage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="postform-container">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-white shadow-2xl rounded-xl p-8 space-y-7 border border-gray-300"
+        className="postform-form"
       >
-        <h2 className="text-3xl font-bold text-gray-900 text-center border-b pb-4">
+        <h2 className="postform-title">
           Donate Item
         </h2>
 
@@ -156,7 +157,7 @@ const PostFormWithImage = () => {
         )}
 
         {/* Item Name */}
-        <div>
+        <div className='postform-itemname'>
           <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
             Item Name *
           </label>
@@ -174,7 +175,7 @@ const PostFormWithImage = () => {
         </div>
 
         {/* Image Upload */}
-        <div className='border-t pt-6'>
+        <div className='postform-image border-t pt-6'>
           <label htmlFor="image-upload" className="block text-sm font-semibold text-gray-700 mb-2">
             Upload Item Image * (Required)
           </label>
@@ -185,18 +186,13 @@ const PostFormWithImage = () => {
             accept="image/*"
             onChange={handleImageChange}
             required
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              hover:file:bg-indigo-100 cursor-pointer"
+            className="btn-upload-image"
           />
         </div>
 
         {/* Image Preview */}
         {imagePreview && (
-          <div className="mt-4">
+          <div className="postform-imgpre mt-4">
             <p className="text-sm font-medium text-gray-700 mb-2">Image Preview:</p>
             <div className="w-full h-64 overflow-hidden rounded-lg shadow-md border-2 border-dashed border-gray-300">
               <Image
@@ -211,7 +207,7 @@ const PostFormWithImage = () => {
         )}
 
         {/* Address */}
-        <div className="relative mt-1">
+        <div className="postform-address relative mt-1">
             <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-1">
                 Pickup Address *
             </label>
@@ -234,34 +230,15 @@ const PostFormWithImage = () => {
                 onClick={() =>
                     setFormData(prev => ({ ...prev, address: `${prev.address} - ${user.phoneNumber}` }))
                 }
-                className="absolute right-2 top-9 bg-indigo-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-indigo-700 transition"
+                className="btn-primary"
                 >
                 Add Phone
                 </button>
             )}
         </div>
 
-
-        {/* Description */}
-        <div>
-          <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
-            Description *
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            rows="6"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Describe the item condition, size, and any other details..."
-            required
-            minLength={10}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-y"
-          />
-        </div>
-
         {/* Category */}
-        <div>
+        {/* <div className='postform-cate'>
           <label htmlFor="Type" className="block text-sm font-semibold text-gray-700 mb-1">
             Category *
           </label>
@@ -282,14 +259,80 @@ const PostFormWithImage = () => {
               </option>
             ))}
           </select>
+        </div> */}
+        <div className='postform-cate'>
+          <label htmlFor="Type" className="block text-sm font-semibold text-gray-700 mb-1">
+            Category *
+          </label>
+  
+            <div className="custom-select-container">
+              <button
+                type="button"
+                className={`custom-select-button ${!formData.Type ? 'placeholder' : ''} ${showCategoryDropdown ? 'open' : ''}`}
+                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+              >
+                <span className="selected-text">
+                  {formData.Type 
+                    ? formData.Type.charAt(0).toUpperCase() + formData.Type.slice(1)
+                    : 'Select a category'
+                  }
+                </span>
+                <svg className="custom-select-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {showCategoryDropdown && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setShowCategoryDropdown(false)}
+                  />
+                  <div className="custom-select-dropdown">
+                    {categories.map((category) => (
+                      <div
+                        key={category}
+                        className={`custom-select-option ${formData.Type === category ? 'selected' : ''}`}
+                        onClick={() => {
+                          handleChange({ target: { name: 'Type', value: category } });
+                          setShowCategoryDropdown(false);
+                        }}
+                      >
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
         </div>
 
+        {/* Description */}
+        <div className='postform-decr'>
+          <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
+            Description *
+          </label>
+          <textarea
+            name="description"
+            id="description"
+            rows="6"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Describe the item condition, size, and any other details..."
+            required
+            minLength={10}
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-y"
+          />
+        </div>
+
+        
+
         {/* Submit Button */}
-        <div className='pt-4'>
+        <div className='postform-create pt-4'>
           <button
             type="submit"
             disabled={loading}
-            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-lg font-bold text-white transition duration-150 ${
+            className={`btn-primary  ${
               loading 
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
