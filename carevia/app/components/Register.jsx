@@ -130,7 +130,54 @@ function Register() {
     setShowDropdown(false);
   };
 
-const handleSubmit = async (e) => {
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   if (!isFormReady) return;
+
+//   setIsSubmitting(true);
+//   setError("");
+
+//   const dataToSubmit = {
+//     name: formData.name,
+//     email: formData.email,
+//     password: formData.password,
+//     phoneNumber: formData.countryCode + formData.phone,
+//     terms: formData.terms,
+//   };
+
+//   try {
+//     const response = await fetch("/api/register", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       credentials: "include",
+//       body: JSON.stringify(dataToSubmit),
+//     });
+
+//     const result = await response.json();
+//     await fetch("/api/auth/session", {
+//       credentials: "include"
+//     });
+//     // ✅ This is where you update the context after successful registration
+//     if (response.ok) {
+//       setUser(result.user);         // store user in context
+//       setIsLoggedIn(true);          // update logged-in state
+//       router.push("/homePage");             // redirect to home page
+//     } else {
+//       setError(result.error || "Registration failed. Please try again.");
+//     }
+//   } catch (error) {
+//     console.error("Registration error:", error);
+//     setError("Network error. Please check your connection and try again.");
+//   } finally {
+//     setIsSubmitting(false);
+//   }
+// };
+
+
+
+  // Close dropdown when clicking outside
+ 
+ const handleSubmit = async (e) => {
   e.preventDefault();
   if (!isFormReady) return;
 
@@ -155,25 +202,31 @@ const handleSubmit = async (e) => {
 
     const result = await response.json();
 
-    // ✅ This is where you update the context after successful registration
-    if (response.ok) {
-      setUser(result.user);         // store user in context
-      setIsLoggedIn(true);          // update logged-in state
-      router.push("/");             // redirect to home page
-    } else {
-      setError(result.error || "Registration failed. Please try again.");
+    // ✅ Only continue if registration succeeded
+    if (!response.ok) {
+      throw new Error(result.error || "Registration failed");
     }
+
+    // ✅ Ensure session cookie is finalized
+    // await fetch("/api/auth/session", {
+    //   credentials: "include",
+    // });
+
+    // ✅ Update auth context safely
+    setUser(result.user);
+    setIsLoggedIn(true);
+
+    // ✅ Redirect AFTER session + context hydrate
+    router.push("/homePage");
+
   } catch (error) {
     console.error("Registration error:", error);
-    setError("Network error. Please check your connection and try again.");
+    setError(error.message || "Network error. Please try again.");
   } finally {
     setIsSubmitting(false);
   }
 };
 
-
-
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (showDropdown && !e.target.closest('.country-dropdown-container')) {

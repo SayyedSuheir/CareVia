@@ -30,7 +30,7 @@ export default function Login() {
       if (response.ok) {
         setIsLoggedIn(true);
         setUser(data.user || { email });
-        router.push("/");
+        router.push("/homePage");
       } else {
         setError(data.error || "Login failed. Please check your credentials.");
       }

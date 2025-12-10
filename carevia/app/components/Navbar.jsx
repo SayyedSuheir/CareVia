@@ -47,7 +47,7 @@ export default function Navbar() {
       <nav className="navbar bg-body-tertiary fixed-top">
         <div className="container-fluid">
 
-           <Link href="/" className="navbar-brand">
+           <Link href="/homePage" className="navbar-brand">
               <span style={{ color: "white" }}>Care</span>
               <span style={{ color: "gold" }}>Via</span>
             </Link>
@@ -108,7 +108,7 @@ export default function Navbar() {
       <nav className="navbar bg-body-tertiary fixed-top">
         <div className="container-fluid">
           <div className="nav-logo">
-            <Link href="/" className="navbar-brand">
+            <Link href="/homePage" className="navbar-brand">
               <span style={{ color: "white" }}>Care</span>
               <span style={{ color: "gold" }}>Via</span>
             </Link>

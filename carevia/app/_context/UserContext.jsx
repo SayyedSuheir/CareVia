@@ -66,6 +66,35 @@ export function UserProvider({ children }) {
   }, []);
 
   /**
+ * ✅ Refresh session from server
+ */
+// const refreshSession = useCallback(async () => {
+//   setLoading(true);
+//   try {
+//     const res = await fetch("/api/auth/session", {
+//       credentials: "include",
+//       cache: "no-store",
+//     });
+//     const data = await res.json();
+
+//     if (res.ok && data.isLoggedIn && data.user) {
+//       setUser(data.user);
+//       setIsLoggedIn(true);
+//     } else {
+//       setUser(null);
+//       setIsLoggedIn(false);
+//     }
+//   } catch (err) {
+//     console.error("Refresh session failed:", err);
+//     setUser(null);
+//     setIsLoggedIn(false);
+//   } finally {
+//     setLoading(false);
+//   }
+// }, []);
+
+
+  /**
    * ✅ Logout
    */
   const logout = useCallback(async () => {
@@ -104,6 +133,7 @@ export function UserProvider({ children }) {
         login,
         logout,
         checkSession,
+       
       }}
     >
       {!loading && children}

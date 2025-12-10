@@ -30,7 +30,20 @@ export async function POST(request) {
 
     // ✅ Create session token
     const sessionToken = `session_${Date.now()}_${newUser._id}`;
+    // const jwtSecret = process.env.JWT_SECRET;
+    // if (!jwtSecret) throw new Error("JWT_SECRET not defined");
 
+      //   const sessionToken = jwt.sign(
+      // {
+      //   userId: newUser._id,
+      //   name: newUser.name,
+      //   email: newUser.email,
+      //   phoneNumber: newUser.phoneNumber,
+      //   role: "user", // optional
+      // },
+      // jwtSecret,
+      // { algorithm: "HS256", expiresIn: "7d" }
+      // );
     // ✅ Attach cookie to response
     const res = NextResponse.json({
       success: true,

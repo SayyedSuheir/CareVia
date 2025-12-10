@@ -10,7 +10,7 @@ function Card() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
 
   const pathname = usePathname();
-const isHome = pathname === "/";
+const isHome = pathname === "/homePage";
 
   const router = useRouter();
   const [posts, setPosts] = useState([]);
