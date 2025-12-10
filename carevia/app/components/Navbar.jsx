@@ -25,6 +25,14 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
+        // ✅ FIX scroll locking (offcanvas cleanup)
+    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
+
+    document
+      .querySelectorAll(".offcanvas-backdrop, .modal-backdrop")
+      .forEach((el) => el.remove());
+      
       const response = await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
