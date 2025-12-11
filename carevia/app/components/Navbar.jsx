@@ -100,6 +100,10 @@ export default function Navbar() {
                 <Link href="/donatePage" onClick={closeOffcanvas} >Donate</Link>
               </div>
 
+              <div className="requesteditems">
+                <Link href="/needs" onClick={closeOffcanvas} >Needs</Link>
+              </div>
+
               <div className="logout">
                 <button className="btn-logout " onClick={handleLogout}>
                   Logout

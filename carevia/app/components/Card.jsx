@@ -5,11 +5,12 @@ import { useAuth } from "@/app/_context/useAuth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 function Card() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
 
-  const pathname = usePathname();
+const pathname = usePathname();
 const isHome = pathname === "/homePage";
 
   const router = useRouter();
@@ -52,8 +53,54 @@ const isHome = pathname === "/homePage";
   fetchPosts();
 }, [authLoading, isHome]);
 
+ const handleNeeds = async (post) => {
+  try {
+    // 1. Check if user is logged in
+    if (!user || !user.id) {
+      alert("You must be logged in to request an item.");
+      router.push("/loginPage");
+      return;
+    }
+
+    // 2. Check if goods exists
+    if (!post || !post.id) {
+      alert("Invalid item. Please try again.");
+      return;
+    }
+
+    const res = await fetch("/api/requests/requestedItem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user.id,
+        goodsId: post.id,
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      alert(result.error || "Something went wrong");
+      return;
+    }
+
+     // ✅ Remove the post from the list so it disappears immediately
+    setPosts((prevPosts) => prevPosts.filter((p) => p.id !== post.id));
+
+    alert("Item requested successfully! You have 24 hours to pick it up.");
+    router.push("/homePage");
+
+  } catch (error) {
+    console.error(error);
+    alert("Error sending request");
+  }
+};
+
+
+ 
 
   // Handle post deletion
+  
   const handleDelete = async (postId) => {
     if (!confirm("Are you sure you want to delete this post?")) return;
 
@@ -116,12 +163,12 @@ const isHome = pathname === "/homePage";
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="text-center">
           <p className="text-xl text-gray-600 mb-4">You haven't created any posts yet</p>
-          <a
-            href="/create-post"
-            className="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
+          <Link
+            href="/donatePage"
+            className="make-first-donation"
           >
             Create Your First Post
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -212,7 +259,7 @@ const isHome = pathname === "/homePage";
                           {isHome ? (
                               // ✅ Button visible ONLY on homepage
                               <button
-                              onClick={() => router.push(`/post/${post.id}`)}
+                              onClick={() => handleNeeds(post)}
                               className="btn-primary w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
                               >
                               Need It
