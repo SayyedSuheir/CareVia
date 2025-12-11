@@ -1,32 +1,35 @@
-"use client"
-import Link from 'next/link'
+"use client";
+
+import Link from "next/link";
+import { useContext } from "react";
+import { UserContext } from "../_context/UserContext";
 
 function Coverheader() {
+  const {isLoggedIn} = useContext(UserContext);
+
   return (
     <div className="hero">
-          <div className="container">
-          <h1>
-            Give What You Don’t Need.
-            <span> Change a Life.</span>
-          </h1>
+      <div className="container">
+        <h1>
+          Give What You Don’t Need.
+          <span> Change a Life.</span>
+        </h1>
 
-          <p>
-            Donate clothes, furniture, and essentials directly to families,
-            shelters, and people who need support in your community.
-          </p>
+        <p>
+          Donate clothes, furniture, and essentials directly to families,
+          shelters, and people who need support in your community.
+        </p>
 
+        {!isLoggedIn && (
           <div className="hero-buttons">
             <Link href="/loginPage" className="btn primary">
               Donate Items
             </Link>
-
-            {/* <a href="/requests" className="btn outline">
-              Browse Requests
-            </a> */}
           </div>
-        </div>
+        )}
+      </div>
     </div>
-  )
+  );
 }
 
-export default Coverheader
+export default Coverheader;
