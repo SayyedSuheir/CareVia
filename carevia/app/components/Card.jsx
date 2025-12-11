@@ -19,20 +19,58 @@ const isHome = pathname === "/homePage";
   const [error, setError] = useState("");
 
   // Fetch user's posts when logged in
- useEffect(() => {
+//  useEffect(() => {
+//   const fetchPosts = async () => {
+//     try {
+//       if (!authLoading) {
+
+//         // ✅ Choose endpoint ONLY based on URL
+//         const endpoint = isHome
+//           ? "/api/postsaction/all"      // Home = all posts
+//           : "/api/postsaction/user";   // Other pages = user's posts
+
+//         const res = await fetch(endpoint, {
+//           credentials: "include",
+//         });
+
+//         const data = await res.json();
+
+//         if (data.success) {
+//           setPosts(data.posts);
+//         } else {
+//           setError(data.error);
+//         }
+
+//       }
+//     } catch (err) {
+//       console.error("Fetch posts error:", err);
+//       setError("Failed to load posts");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchPosts();
+// }, [authLoading, isHome]);
+
+useEffect(() => {
   const fetchPosts = async () => {
     try {
       if (!authLoading) {
+        let endpoint;
 
-        // ✅ Choose endpoint ONLY based on URL
-        const endpoint = isHome
-          ? "/api/postsaction/all"      // Home = all posts
-          : "/api/postsaction/user";   // Other pages = user's posts
+        if (isHome) {
+          // Homepage: all posts except already requested
+          endpoint = "/api/postsaction/all";
+        } else if (pathname === "/needs") {
+          // Needs page: only requested items by logged-in user
+          endpoint = `/api/requests/requestedItem?userId=${user.id}`;
+        } else {
+          // Other pages: user's own posts
+          endpoint = "/api/postsaction/user";
+        }
 
-        const res = await fetch(endpoint, {
-          credentials: "include",
-        });
-
+        const res = await fetch(endpoint, { credentials: "include" });
         const data = await res.json();
 
         if (data.success) {
@@ -40,7 +78,6 @@ const isHome = pathname === "/homePage";
         } else {
           setError(data.error);
         }
-
       }
     } catch (err) {
       console.error("Fetch posts error:", err);
@@ -51,7 +88,7 @@ const isHome = pathname === "/homePage";
   };
 
   fetchPosts();
-}, [authLoading, isHome]);
+}, [authLoading, isHome, pathname, user]);
 
  const handleNeeds = async (post) => {
   try {
@@ -177,11 +214,14 @@ const isHome = pathname === "/homePage";
   // Display user's posts
   return (
     <div className="container mx-auto px-4 py-8">
-      {!isHome && (
-            <h2 className="text-3xl font-bold mb-6 text-center">
-                My Posts ({posts.length})
-            </h2>
-        )}
+      <h2 className="text-3xl font-bold mb-6 text-center">
+      {pathname === "/needs"
+        ? `My Needs (${posts.length})`
+        : !isHome
+        ? `My Posts (${posts.length})`
+        : null}
+      </h2>
+
 
      
 
@@ -256,7 +296,7 @@ const isHome = pathname === "/homePage";
               
                   <div className="card-footer btn  flex gap-2">
 
-                          {isHome ? (
+                          {/* {isHome ? (
                               // ✅ Button visible ONLY on homepage
                               <button
                               onClick={() => handleNeeds(post)}
@@ -285,7 +325,45 @@ const isHome = pathname === "/homePage";
                               </div>
                               </div>
 
-                          )}
+                          )} */}
+
+                          {isHome ? (
+                            // ✅ "Need It" button only on homepage
+                                  <button
+                                    onClick={() => handleNeeds(post)}
+                                    className="btn-primary w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
+                                  >
+                                    Need It
+                                  </button>
+                                ) : pathname === "/needs" ? (
+                                  // ✅ On Needs page: no "Need It" button, show info only
+                                  <div className="text-sm text-gray-500 mb-2">
+                                    Requested at: {new Date(post.requestedAt).toLocaleDateString()}
+                                  </div>
+                                ) : (
+                                  // ✅ User's own posts page
+                                  <div className="mydonation-controles">
+                                    <div className="btn-delete">
+                                      <button
+                                        onClick={() => handleDelete(post.id)}
+                                        className="btn-primary flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold"
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                    <div className="btn-edit">
+                                      <button
+                                        onClick={() => router.push(`/editmypage/${post.id}`)}
+                                        className="btn-primary flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold"
+                                      >
+                                        Edit
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+
+
+                          
 
                   </div>
 
