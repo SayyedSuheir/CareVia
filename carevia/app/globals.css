@@ -1161,7 +1161,7 @@ th {
     background: white;
     padding: 10px 14px;
     border-radius: 14px;
-    border: 2px solid #F4A978;
+    border: 2px solid gold;
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     min-width: 140px;
@@ -1231,4 +1231,8 @@ th {
         .dropdown-item:hover {
           background: #fff5ee;
         }
-      
+      .clearbtn{
+        border-radius: 14px !important;
+        padding: 10px 14px;
+        
+      }

@@ -45,7 +45,9 @@ export default function Filters() {
   fetchTypes();
   }, []);
 
-
+   const clearFilters = () => {
+    updateFilters({ city: "", type: "" }); // reset all filters
+  };
   return (
     <>
     
@@ -55,7 +57,7 @@ export default function Filters() {
         <div className="filter-wrapper">
           <div className="filter-box" onClick={() => toggleDropdown("location")}>
             <FaMapMarkerAlt className="filter-icon" />
-            <span className="filter-label">Location</span>
+            <span className="filter-label">City - {filters.city}</span>
             <FaChevronDown
               className={`filter-arrow ${openDropdown === "location" ? "rotate" : ""}`}
             />
@@ -70,7 +72,10 @@ export default function Filters() {
                   {locations[region].map((city) => (
                     <div key={city} 
                     className="dropdown-item"
-                    onClick={()=>updateFilters({city: city})}>
+                    onClick={()=>
+                        {updateFilters({city: city})
+                         setOpenDropdown(null);  
+                        } }>
                       {city}
                     </div>
                   ))}
@@ -84,7 +89,7 @@ export default function Filters() {
         <div className="filter-wrapper">
           <div className="filter-box" onClick={() => toggleDropdown("type")}>
             <FaTags className="filter-icon" />
-            <span className="filter-label">Type</span>
+            <span className="filter-label">Type - {filters.Type}</span>
             <FaChevronDown
               className={`filter-arrow ${openDropdown === "type" ? "rotate" : ""}`}
             />
@@ -97,13 +102,29 @@ export default function Filters() {
                 <div 
                   key={t}
                   className="dropdown-item"
-                  onClick={() => updateFilters({type: t})}>
+                  onClick={() => 
+                  {
+                   updateFilters({type: t})
+                   setOpenDropdown(null);  
+                  }
+                  
+                  }>
                     {t}
                 </div>
               ))}
 
             </div>
           )}
+        </div>
+
+        {/* Clear filter button */}
+        <div className="">
+      <button
+        onClick={clearFilters}
+        className="btn-primary clearbtn"
+        >
+        Clear 
+      </button>
         </div>
       </div>
     </>
