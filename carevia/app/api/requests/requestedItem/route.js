@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectDB from "@/app/_lib/mongodb";
-import RequestedItem from "@/app/models/requesteditems";
+import RequestedItem from "@/app/_models/requesteditems";
 
 /**
  * POST /api/requests/requestedItem

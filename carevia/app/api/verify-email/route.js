@@ -1,6 +1,6 @@
 // app/api/verify-email/route.js
-import Users from '../../models/Users';
-import PendingUsers from '../../models/PendingUsers';
+import Users from '../../_models/Users';
+import PendingUsers from '../../_models/PendingUsers';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
 

@@ -6,6 +6,8 @@ import "./globals.css";
 import { useAuth } from "./_context/useAuth"
 import { UserProvider } from './_context/UserContext'
 import Navbar from "./components/Navbar";
+import BottomNavbar from "./components/BottomNavbar";
+import { FilterProvider } from "./_context/FilterContext";
 
 function NavbarWrapper() {
   const { isLoggedIn } = useAuth()
@@ -26,11 +28,12 @@ export default function RootLayout({ children }) {
        
       >
       <UserProvider>
-        
+        <FilterProvider>   
         <BootstrapClient />
         <NavbarWrapper />
-         
+         <BottomNavbar/>
          {children}
+         </FilterProvider>
         </UserProvider>
       </body>
     </html>

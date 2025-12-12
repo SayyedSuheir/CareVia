@@ -1,4 +1,4 @@
-import Goods from '@/app/models/Goods';
+import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';

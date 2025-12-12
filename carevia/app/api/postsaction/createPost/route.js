@@ -1,4 +1,4 @@
-import Goods from '@/app/models/Goods';
+import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
@@ -64,6 +64,10 @@ export async function POST(request) {
     const Type = formData.get('Type');
     const address = formData.get('address');
     const imageFile = formData.get('image');
+    const city = formData.get('city')?.trim();
+    const area = formData.get('area')?.trim();
+    const village = formData.get('village')?.trim();
+    
 
     console.log('✅ FormData parsed');
         
@@ -77,7 +81,15 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
+    if (!city || !area || !village) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "City, area, and village are required"
+        },
+        { status: 400 }
+      );
+    }
     if (!description || description.trim().length < 10) {
       return NextResponse.json(
         { 
@@ -170,7 +182,10 @@ export async function POST(request) {
       image: imageUrl,
       description: description.trim(),
       Type: Type.trim(),
-      address: address.trim()
+      address: `${area}, ${city}, ${village}`,
+      city,
+      area,
+      village
     });
 
     console.log('✅ Post created:', newPost._id);

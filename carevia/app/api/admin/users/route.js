@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectDB from "@/app/_lib/mongodb";
-import Users from "@/app/models/Users";
+import Users from "@/app/_models/Users";
 
 // Helper function to check admin
 function isAdmin(email) {

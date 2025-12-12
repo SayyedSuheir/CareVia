@@ -1,30 +1,31 @@
-import Goods from '@/app/models/Goods';
+import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
-import RequestedItem from '@/app/models/requesteditems';
+import RequestedItem from '@/app/_models/requesteditems';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 /**
- * GET /api/postsaction/all
- * Fetch ALL public posts (homepage)
+ * GET /api/postsaction/all?city=Tyre&type=clothes
+ * Fetch ALL public posts (homepage) with optional filters
  */
 export async function GET(request) {
   try {
     console.log("🔵 Fetching ALL posts");
 
-    // Connect to MongoDB
     await connectDB();
     console.log("✅ MongoDB connected");
 
-    // Get logged-in user from JWT cookie
+    const url = new URL(request.url);
+    const city = url.searchParams.get('city')?.trim();
+    const type = url.searchParams.get('type')?.trim();
+
     const token = request.cookies.get('sessionToken')?.value;
     const decoded = token
       ? jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })
       : null;
     const userId = decoded?.userId;
 
-    // Find posts the user has already requested
     const requested = userId
       ? await RequestedItem.find({
           userId: new mongoose.Types.ObjectId(userId),
@@ -34,11 +35,16 @@ export async function GET(request) {
 
     const requestedIds = requested.map((r) => r.goodsId.toString());
 
-    // Fetch posts for homePage
-    const posts = await Goods.find({
-      _id: { $nin: requestedIds },   // Exclude requested
-      ...(userId ? { userId: { $ne: userId } } : {}), // Exclude user's own posts
-    }).sort({ createdAt: -1 });
+    // Build filter query
+    const query = {
+      _id: { $nin: requestedIds },
+      ...(userId ? { userId: { $ne: userId } } : {}),
+    };
+
+    if (city) query.city = city;
+    if (type) query.Type = type;
+
+    const posts = await Goods.find(query).sort({ createdAt: -1 });
 
     const formattedPosts = posts.map((post) => ({
       id: post._id.toString(),
@@ -48,6 +54,9 @@ export async function GET(request) {
       description: post.description,
       Type: post.Type,
       address: post.address,
+      city: post.city,
+      area: post.area,
+      village: post.village,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     }));

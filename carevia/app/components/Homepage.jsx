@@ -3,16 +3,23 @@
 
 
 import Card from './Card';
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
+import Filter from './Filter'
 
 function Homepage() {
   return (
     <div>
      
-          <header>
+          {/* <header>
             <Navbar/>
-          </header>
-          <main>
+          </header> */}
+          <main 
+          style={{ display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center"}}
+                      >
+            <Filter/>
             <Card/>
           </main>
         

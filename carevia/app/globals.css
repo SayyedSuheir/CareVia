@@ -1060,3 +1060,175 @@ th {
   background-color: #2BB0A8;
   color: white;
 }
+/* bottom navbar */
+
+.bottom-navbar-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 430px;
+  z-index: 999;
+}
+
+.bottom-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 25px;
+  padding: 12px 25px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.nav-item {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-size: 12px;
+  color: #555;
+}
+
+.nav-item span {
+  margin-top: 4px;
+}
+
+/* Icon Colors (same as screenshot) */
+.icon {
+  font-size: 25px;
+}
+
+.icon.home {
+  color: #F6A77A;
+}
+
+.icon.achievements {
+  color: #F4B77D;
+}
+
+.icon.create {
+  color: #7EC9F9;
+  font-size: 30px;
+}
+
+.icon.donations {
+  color: #8ED49C;
+}
+
+.icon.needs {
+  color: #F3B68C;
+}
+
+.nav-item:hover {
+  opacity: 0.75;
+  transition: 0.25s;
+}
+/* no posts  */
+.no-posts{
+  width: 100%;
+
+  margin-top: 5%;
+}
+/* filter css */
+
+        .filters-container {
+  display: flex;
+  gap: 12px;
+  margin: 20% auto;
+  width: fit-content;
+  position: relative;
+        }
+
+ .filter-wrapper {
+   position: relative;
+    }
+
+  .filter-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 2px solid #F4A978;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    min-width: 140px;
+        }
+
+        .filter-icon {
+          font-size: 18px;
+          color: #5A5A5A;
+        }
+
+        .filter-label {
+          font-size: 15px;
+          color: #333;
+        }
+
+        .filter-arrow {
+          margin-left: auto;
+          font-size: 14px;
+          color: #666;
+          transition: transform 0.2s;
+        }
+
+        .filter-arrow.rotate {
+          transform: rotate(180deg);
+        }
+
+        .dropdown {
+          position: absolute;
+          top: 50px;
+          left: 0;
+          width: 220px;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+          z-index: 10;
+          overflow: hidden;
+          max-height: 400px;
+          overflow-y: auto;
+        }
+
+        .dropdown-group {
+          border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-group:last-child {
+          border-bottom: none;
+        }
+
+        .dropdown-title {
+          padding: 10px 14px;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--color-light-gray);
+          background: var(--color-primary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .dropdown-item {
+          padding: 10px 14px;
+          padding-left: 24px;
+          font-size: 14px;
+          cursor: pointer;
+          color: var(--color-dark-text);
+        }
+
+        .dropdown-item:hover {
+          background: #fff5ee;
+        }
+      

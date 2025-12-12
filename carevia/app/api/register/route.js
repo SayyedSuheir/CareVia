@@ -1,4 +1,4 @@
-import Users from '@/app/models/Users';
+import Users from '@/app/_models/Users';
 import connectDB from '@/app/_lib/mongodb';
 import bcrypt from 'bcrypt';
 import { NextResponse } from 'next/server';

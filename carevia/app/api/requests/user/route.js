@@ -1,4 +1,4 @@
-import RequestedItem from '@/app/models/requesteditems';
+import RequestedItem from '@/app/_models/requesteditems';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';

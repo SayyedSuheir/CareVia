@@ -1,5 +1,5 @@
 
-import Users from '../../../models/Users';
+import Users from '../../../_models/Users';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
 
