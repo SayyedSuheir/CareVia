@@ -10,6 +10,12 @@ function Coverheader() {
   return (
     <div className="hero">
       <div className="container">
+      {!isLoggedIn && (
+        <div className="hero-buttons">
+          <Link href="/homePage" className="btn primary btn-getstarted">Get Started</Link>
+         
+        </div>
+      )}
         <h1>
           Give What You Don’t Need.
           <span> Change a Life.</span>

@@ -783,7 +783,12 @@ h2 {
   background:var(--gray);
   padding:5rem 1rem;
 }
-
+.hero-buttons{
+ width:100%;
+ 
+ display: flex;
+ justify-content: end;
+}
 .hero h1 {
   font-size:3rem;
   max-width:700px;
@@ -800,11 +805,11 @@ h2 {
   font-size:1.1rem;
 }
 
-.hero-buttons {
+/* .hero-buttons {
   display:flex;
   justify-content:center;
   gap:1rem;
-}
+} */
 
 
 /* BUTTONS */
@@ -821,6 +826,10 @@ h2 {
 }
 
 .btn-getstarted{
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #FFC857 ;
   color:var(--color-dark-text);
 }
@@ -915,11 +924,14 @@ h2 {
 
 /* CTA */
 .cta {
-  background:var(--green);
+  width: 100%;
+  display: flex;
+
+  background:var(--color-primary);
   color:#fff;
   text-align:center;
   margin-top: 5%;
-  padding:4rem 1rem;
+  padding-left:2% ;
 }
 /* adminDashboard */
 .admin-container {
