@@ -9,13 +9,25 @@ function Coverheader() {
 
   return (
     <div className="hero">
-      <div className="container">
-      {!isLoggedIn && (
+      <div className="container-coverpage">
+      <div className="coverheader-btns-header">
+        <div className="browse  hero-buttons">
+        <Link href="/homePage" className="btn primary">
+             Browse
+          </Link>
+        </div>
+       {!isLoggedIn && (
         <div className="hero-buttons">
-          <Link href="/homePage" className="btn primary btn-getstarted">Get Started</Link>
+          <Link 
+          href="/loginPage" 
+          className="btn primary btn-getstarted">
+            Get Started
+            </Link>
          
         </div>
-      )}
+
+         )}
+      </div>
         <h1>
           Give What You Don’t Need.
           <span> Change a Life.</span>
@@ -27,8 +39,8 @@ function Coverheader() {
         </p>
 
         {!isLoggedIn && (
-          <div className="hero-buttons">
-            <Link href="/loginPage" className="btn primary">
+          <div className="hero-buttons donateitems">
+            <Link href="/loginPage" className="btn primary donatebtn">
               Donate Items
             </Link>
           </div>

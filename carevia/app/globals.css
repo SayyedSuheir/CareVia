@@ -18,12 +18,17 @@
  
 }
 
+
 body{
   width:100%;
   height: 100vh;
   background-color: var(--gray);
   display: flex;
   flex-direction: column;
+  margin-top: 10%;
+  align-items: center;
+  margin:0;
+  padding: 0;
  
 }
 
@@ -756,18 +761,22 @@ font-weight: 700;
 a {
   text-decoration:none;
 }
-
-.container {
-  max-width:100%;
-  /* margin:auto; */
-  /* padding:4rem 1.5rem; */
-}
 .hero{
+  width:100%;
+  display: flex;
+   justify-content: center;
+  align-items: center;
   margin: 0 !important;
   padding: 0 !important;
 }
+.container-coverpage {
+  width:80%;
+ 
+}
+
 .container-cover{
   margin-top: 5%;
+
 }
 
 h2 {
@@ -784,10 +793,11 @@ h2 {
   padding:5rem 1rem;
 }
 .hero-buttons{
- width:100%;
+ width:60%;
  
  display: flex;
- justify-content: end;
+ justify-content: center;
+ align-items: center;
 }
 .hero h1 {
   font-size:3rem;
@@ -816,17 +826,17 @@ h2 {
 .btn {
   display:inline-block;
   padding:.8rem 1.8rem;
-  border-radius:6px;
+  border-radius:50% 60;
   font-weight:600;
 }
 
 .primary {
-  background:var(--green);
+  background:var(--color-primary);
   color:#fff;
 }
 
 .btn-getstarted{
-  width: 50%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -835,7 +845,7 @@ h2 {
 }
 .outline {
   border:2px solid var(--green);
-  color:var(--green);
+  color:var(--color-primary);
 }
 
 .outline.white {
@@ -926,7 +936,8 @@ h2 {
 .cta {
   width: 100%;
   display: flex;
-
+  justify-content: center;
+  align-items: center;
   background:var(--color-primary);
   color:#fff;
   text-align:center;
@@ -1236,3 +1247,86 @@ th {
         padding: 10px 14px;
         
       }
+      /* cover header btn */
+      .coverheader-btns-header{
+        display: flex;
+        width:100%;
+        gap:5%;
+
+      }
+      .browse{
+        width:40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .browse a {
+
+        cursor: pointer;
+        color:var(--color-light-gray);
+      }
+      .donateitems{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+       
+      }
+      .donatebtn{
+        width:80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+
+      }
+
+@media screen and (min-width:1300px) {
+  
+  .about-services{
+    width:100%;
+    display: flex;
+    justify-content: center;
+    
+    
+   
+  }
+  .about{
+    width:20%;
+    display: flex;
+    
+    margin: 0 !important;
+    
+  }
+  .about p{
+    text-align: center;
+    line-height: 2.8rem;
+    background-color: white;
+    
+    
+    border: 1px solid gold;
+
+  }
+  .services{
+    width: 80%;
+    display: flex;
+    padding: 0 !important;
+    margin: 0 !important;
+    
+
+  }
+  .scontainer{
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .services-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+
+
+  }
+  .steps{
+    width:100%;
+  }
+}
