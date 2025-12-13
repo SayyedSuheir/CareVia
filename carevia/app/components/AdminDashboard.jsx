@@ -220,10 +220,10 @@ function AdminDashboard() {
 
       {/* Sidebar */}
       <div className="admin-sidebar">
-        <div className="admin-sidebar-head">
+        {/* <div className="admin-sidebar-head">
           <div className="admin-logo"><h2><span style={{color:"white"}}>Care</span><span style={{color:"gold"}}>Via</span></h2></div>
           <div className="logout-btn"><button onClick={handleLogout}>Logout</button></div>
-        </div>
+        </div> */}
         <div className="admin-nav">
           <nav className="admin-nav-items">
             <button className={activeTab==='dashboard'?'active':''} onClick={()=>setActiveTab('dashboard')}>Dashboard</button>
