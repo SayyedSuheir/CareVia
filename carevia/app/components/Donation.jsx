@@ -3,7 +3,7 @@ import Card from "./Card"
 
 function Donation() {
   return (
-    <div>
+    <div >
         <Card/>
     </div>
   )

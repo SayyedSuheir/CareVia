@@ -167,38 +167,32 @@ const EditPostPage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="page-container">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-2xl bg-white shadow-2xl rounded-xl p-8 space-y-7 border border-gray-300"
+        className="form-card"
       >
-        <div className="flex items-center justify-between border-b pb-4">
-          <h2 className="text-3xl font-bold text-gray-900">
+        <div className="header-section">
+          <h2 className="title">
             Edit Item
           </h2>
-          <button
-            type="button"
-            onClick={() => router.push('/my-posts')}
-            className="text-gray-600 hover:text-gray-800"
-          >
-            ✕ Cancel
-          </button>
+         
         </div>
 
         {/* Success/Error Messages */}
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="message-box error-hidden">
             {error}
           </div>
         )}
         {success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+          <div className="message-box success-hidden">
             Post updated successfully!
           </div>
         )}
 
         {/* Item Name */}
-        <div>
+        <div className="form-group">
           <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
             Item Name *
           </label>
@@ -217,25 +211,25 @@ const EditPostPage = () => {
 
         {/* Current Image Preview */}
         {imagePreview && (
-          <div className="mt-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">
+          <div className="image-preview-container">
+            <p className="image-label">
               {imageFile ? 'New Image Preview:' : 'Current Image:'}
             </p>
-            <div className="w-full h-64 overflow-hidden rounded-lg shadow-md border-2 border-dashed border-gray-300">
+            <div className="image-box">
               <Image
                 src={imagePreview}
                 alt="Item Preview"
                 width={300}
                 height={300}
-                className="w-full h-full object-cover"
+                className="item-image"
               />
             </div>
           </div>
         )}
 
         {/* Image Upload */}
-        <div className='border-t pt-6'>
-          <label htmlFor="image-upload" className="block text-sm font-semibold text-gray-700 mb-2">
+        <div className='form-group border-top'>
+          <label htmlFor="image-upload" className="label">
             Change Image (Optional - leave empty to keep current image)
           </label>
           <input
@@ -244,18 +238,13 @@ const EditPostPage = () => {
             id="image-upload"
             accept="image/*"
             onChange={handleImageChange}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700
-              hover:file:bg-indigo-100 cursor-pointer"
+            className="file-input"
           />
         </div>
 
         {/* Address */}
-        <div>
-          <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-1">
+        <div className="form-group">
+          <label htmlFor="address" className="label">
             Pickup Address *
           </label>
           <input
@@ -267,13 +256,13 @@ const EditPostPage = () => {
             placeholder="Full address for item pickup"
             required
             minLength={5}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            className="input-field"
           />
         </div>
 
         {/* Description */}
-        <div>
-          <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">
+        <div className="form-group">
+          <label htmlFor="description" className="label">
             Description *
           </label>
           <textarea
@@ -285,13 +274,13 @@ const EditPostPage = () => {
             placeholder="Describe the item condition, size, and any other details..."
             required
             minLength={10}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-y"
+            className="input-field textarea-field"
           />
         </div>
 
         {/* Category */}
-        <div>
-          <label htmlFor="Type" className="block text-sm font-semibold text-gray-700 mb-1">
+        <div className="form-group">
+          <label htmlFor="Type" className="label">
             Category *
           </label>
           <select
@@ -300,7 +289,7 @@ const EditPostPage = () => {
             value={formData.Type}
             onChange={handleChange}
             required
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-lg appearance-none bg-white border shadow-sm transition duration-150"
+            className="select-field"
           >
             <option value="" disabled>
               Select a category
@@ -314,18 +303,18 @@ const EditPostPage = () => {
         </div>
 
         {/* Submit Buttons */}
-        <div className='pt-4 flex gap-4'>
+        <div className='button-group'>
           <button
             type="button"
-            onClick={() => router.push('/my-posts')}
-            className="flex-1 py-3 px-4 border border-gray-300 rounded-lg shadow-md text-lg font-bold text-gray-700 bg-white hover:bg-gray-50 transition duration-150"
+            onClick={() => router.push('/myDonation')}
+            className="action-button cancel-secondary"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className={`flex-1 py-3 px-4 border border-transparent rounded-lg shadow-md text-lg font-bold text-white transition duration-150 ${
+            className={`action-button submit-primary  ${
               submitting 
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'

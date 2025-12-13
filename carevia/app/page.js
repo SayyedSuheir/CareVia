@@ -1,9 +1,12 @@
 "use client";
-import Coverbody from "./components/Coverbody";
-import Coverfooter from "./components/Coverfooter";
+
+import CoverPage from "./components/CoverPage";
+
+// import Coverbody from "./components/Coverbody";
+// import Coverfooter from "./components/Coverfooter";
 // import Homepage from "./components/Homepage";
 
-import Coverheader from "./components/Coverheader";
+// import Coverheader from "./components/Coverheader";
 
 
 
@@ -12,9 +15,9 @@ export default function Home() {
     <div>
       
       <main>
-         
+         <CoverPage/>
           {/* <Homepage/> */}
-          <div>
+          {/* <div>
            <Coverheader />
           </div>
           <div>
@@ -22,7 +25,7 @@ export default function Home() {
           </div>
           <div>
             <Coverfooter/>
-          </div>
+          </div> */}
       </main>
     </div>
   );

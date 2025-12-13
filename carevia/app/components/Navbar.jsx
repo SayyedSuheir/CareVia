@@ -49,13 +49,13 @@ export default function Navbar() {
   };
 
   return (
- <>
+ <div className="topNav">
   {isLoggedIn ? (
     <>
-      <nav className="navbar bg-body-tertiary fixed-top">
+      <nav className="navbar">
         <div className="container-fluid">
 
-           <Link href="/homePage" className="navbar-brand">
+           <Link href="/" className="navbar-brand">
               <span style={{ color: "white" }}>Care</span>
               <span style={{ color: "gold" }}>Via</span>
             </Link>
@@ -139,7 +139,7 @@ export default function Navbar() {
       </nav>
     </>
   )}
-</>
+</div>
 
 
   )

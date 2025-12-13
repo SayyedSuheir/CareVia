@@ -7,6 +7,7 @@ import { FilterContext } from "../_context/FilterContext";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
+
 function Card() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
 
@@ -28,7 +29,10 @@ function Card() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        if (!authLoading) {
+        if (authLoading)  return;
+
+        if (pathname === "/needs" && (!user || !user.id)) return;
+
           let endpoint;
 
           if (isHome) {
@@ -47,7 +51,7 @@ function Card() {
           } else {
             setError(data.error);
           }
-        }
+        
       } catch (err) {
         console.error("Fetch posts error:", err);
         setError("Failed to load posts");
@@ -188,109 +192,119 @@ function Card() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        {pathname === "/needs"
-          ? `My Needs (${posts.length})`
-          : !isHome
-          ? `My Posts (${posts.length})`
-          : null}
-      </h2>
+    <div className="homepage" style={{display:'flex', flexDirection: 'column'}}>
+    
+      {pathname !== "/homepage" && (
+          <h2 className="posts-number" >
+            {pathname === "/needs"
+              ? `My Needs (${posts.length})`
+              : !isHome
+              ? `My Posts (${posts.length})`
+              : null}
+          </h2>
+        )}
 
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          className="product-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-          <div className="card">
-            <div className="image-container relative h-64 bg-gray-200">
-              <Image
-                src={post.image || "/defaultGoods.png"}
-                alt={post.name}
-                width={300}
-                height={300}
-                className="object-cover"
-              />
-              <div className="absolute top-2 right-2 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                {post.Type}
-              </div>
-            </div>
+      <div className="card-container">
+        
 
-            <div className="card-body p-6">
-              <h2 className="card-title item-title text-xl font-bold mb-2 capitalize">
-                {post.name}
-              </h2>
-
-              <p className="card-text text-base text-gray-600 mb-4 line-clamp-3">
-                {post.description}
-              </p>
-
-              <div className="citem-address flex items-center text-sm text-gray-500 mb-4">
-                <svg
-                  className="w-4 h-4 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  width={20}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span className="truncate">{post.address}</span>
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            
+          >
+            <div className="card">
+              <div className="card-title">
+                <h2>
+                    {post.name}
+                  </h2>
+                </div>
+              <div className="image-container card-img-top">
+                <Image
+                  src={post.image || "/defaultGoods.png"}
+                  alt={post.name}
+                  width={300}
+                  height={200}
+                  
+                />
+                <div className="card-title">
+                  {post.Type}
+                </div>
               </div>
 
-              <p className="text-xs text-gray-400 mb-4">
-                Posted: {new Date(post.createdAt).toLocaleDateString()}
-              </p>
-            </div>
+              <div className="card-body">
+                
 
-            <div className="card-footer btn flex gap-2">
-              {isHome ? (
-                <button
-                  onClick={() => handleNeeds(post)}
-                  className="btn-primary w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-semibold"
-                >
-                  Need It
-                </button>
-              ) : pathname === "/needs" ? (
-                <div className="text-sm text-gray-500 mb-2">
-                  Requested at:{" "}
-                  {new Date(post.requestedAt).toLocaleDateString()}
+                <p className="card-text">
+                  {post.description}
+                </p>
+
+                <div className="card-text">
+                  <svg
+                    className="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    width={20}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <span className="truncate">{post.address}</span>
                 </div>
-              ) : (
-                <div className="mydonation-controles">
-                  <div className="btn-delete">
-                    <button
-                      onClick={() => handleDelete(post.id)}
-                      className="btn-primary flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-semibold"
-                    >
-                      Delete
-                    </button>
+
+                <p className="card-text">
+                  Posted: {new Date(post.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div className="btn card-body">
+                {isHome ? (
+                  <button
+                    onClick={() => handleNeeds(post)}
+                    className="btn-primary card-body btn"
+                  >
+                    Need It
+                  </button>
+                ) : pathname === "/needs" ? (
+                  <div className="card-text">
+                    Requested at:{" "}
+                    {new Date(post.requestedAt).toLocaleDateString()}
                   </div>
-                  <div className="btn-edit">
-                    <button
-                      onClick={() => router.push(`/editmypage/${post.id}`)}
-                      className="btn-primary flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-semibold"
-                    >
-                      Edit
-                    </button>
+                ) : (
+                  <div className="mydonation-controles">
+                    <div className="btn-delete">
+                      <button
+                        onClick={() => handleDelete(post.id)}
+                        className="btn-primary "
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <div className="btn-edit">
+                      <button
+                        onClick={() => router.push(`/editmypage/${post.id}`)}
+                        className="btn-primary btn"
+                      >
+                        Edit
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

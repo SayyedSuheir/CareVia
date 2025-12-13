@@ -7,7 +7,7 @@ import Homepage from "../components/Homepage"
 
 function page() {
   return (
-    <div>
+    <div className="homepage-container">
        
         {/* <FilterProvider>    */}
             <Homepage />
