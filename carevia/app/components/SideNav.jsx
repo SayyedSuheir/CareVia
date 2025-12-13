@@ -44,10 +44,10 @@ export default function SideNavbar() {
         <div className="nav-brand">
           {/* <h2>CareVia</h2> */}
             <Image
-            src="/logo.png"
+            src="/carevialogo2.png"
             alt="Carevia"
-            width={100}
-            height={100}
+            width={300}
+            height={300}
           
           />
         </div>
