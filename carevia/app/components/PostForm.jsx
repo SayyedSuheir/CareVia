@@ -1,112 +1,162 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
-import { useAuth } from '@/app/_context/useAuth';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+import { useAuth } from "@/app/_context/useAuth";
+import { useRouter } from "next/navigation";
 
 const PostFormWithImage = () => {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    area: '',
-    city: '',
-    village: '',
-    description: '',
-    Type: '',
+    name: "",
+    area: "",
+    city: "",
+    village: "",
+    description: "",
+    Type: "",
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [checkingAI, setCheckingAI] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const categories = ["food", "clothes", "electronics", "furniture", "other"];
 
-  const categories = ['food', 'clothes', 'electronics', 'furniture', 'other'];
-
-  // Google Places Autocomplete refs
   const areaRef = useRef(null);
   const cityRef = useRef(null);
   const villageRef = useRef(null);
   let autocompleteArea, autocompleteCity, autocompleteVillage;
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.google) {
-      autocompleteArea = new window.google.maps.places.Autocomplete(areaRef.current, { types: ['geocode'] });
-      autocompleteArea.addListener('place_changed', () => {
+    if (typeof window !== "undefined" && window.google) {
+      autocompleteArea = new window.google.maps.places.Autocomplete(areaRef.current, { types: ["geocode"] });
+      autocompleteArea.addListener("place_changed", () => {
         const place = autocompleteArea.getPlace();
-        if (place.address_components) {
-          const area = place.address_components[0]?.long_name || '';
-          setFormData(prev => ({ ...prev, area }));
-        }
+        const area = place.address_components?.[0]?.long_name || "";
+        setFormData((prev) => ({ ...prev, area }));
       });
 
-      autocompleteCity = new window.google.maps.places.Autocomplete(cityRef.current, { types: ['(cities)'] });
-      autocompleteCity.addListener('place_changed', () => {
+      autocompleteCity = new window.google.maps.places.Autocomplete(cityRef.current, { types: ["(cities)"] });
+      autocompleteCity.addListener("place_changed", () => {
         const place = autocompleteCity.getPlace();
-        const city = place.address_components[0]?.long_name || '';
-        setFormData(prev => ({ ...prev, city }));
+        const city = place.address_components?.[0]?.long_name || "";
+        setFormData((prev) => ({ ...prev, city }));
       });
 
-      autocompleteVillage = new window.google.maps.places.Autocomplete(villageRef.current, { types: ['geocode'] });
-      autocompleteVillage.addListener('place_changed', () => {
+      autocompleteVillage = new window.google.maps.places.Autocomplete(villageRef.current, { types: ["geocode"] });
+      autocompleteVillage.addListener("place_changed", () => {
         const place = autocompleteVillage.getPlace();
-        const village = place.address_components[0]?.long_name || '';
-        setFormData(prev => ({ ...prev, village }));
+        const village = place.address_components?.[0]?.long_name || "";
+        setFormData((prev) => ({ ...prev, village }));
       });
     }
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({ ...prevData, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-      setError('');
-    } else {
+    if (!file) {
       setImageFile(null);
       setImagePreview(null);
-      setError('Please select a valid image file');
+      setError("Please select an image");
+      return;
     }
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess(false);
-    setLoading(true);
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB");
+      setImageFile(null);
+      setImagePreview(null);
+      return;
+    }
 
+    setCheckingAI(true);
+    setError("");
     try {
-      if (!imageFile) {
-        setError('Please select an image');
-        setLoading(false);
+      const formDataAI = new FormData();
+      formDataAI.append("image", file);
+
+      const res = await fetch("/api/image/validate", {
+        method: "POST",
+        body: formDataAI,
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setError("AI validation failed. Try another image.");
+        setImageFile(null);
+        setImagePreview(null);
+        setCheckingAI(false);
         return;
       }
 
+      // Check AI-generated probability
+      const aiProb = data.result?.type?.ai_generated || 0;
+      if (aiProb > 0.9) {
+        setError("Image appears to be AI-generated. Please upload a real photo.");
+        setImageFile(null);
+        setImagePreview(null);
+        setCheckingAI(false);
+        return;
+      }
+
+      // ✅ Passed AI check
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      setError("");
+    } catch (err) {
+      console.error("AI validation error:", err);
+      setError("Failed to validate image. Try again.");
+      setImageFile(null);
+      setImagePreview(null);
+    } finally {
+      setCheckingAI(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+    setLoading(true);
+
+    if (!imageFile) {
+      setError("Please upload a valid image before submitting.");
+      setLoading(false);
+      return;
+    }
+
+    try {
       const fullAddress = `${formData.area}, ${formData.city}, ${formData.village}`;
-
       const dataToSend = new FormData();
-      dataToSend.append('name', formData.name);
-      dataToSend.append('address', fullAddress);
-      dataToSend.append('description', formData.description);
-      dataToSend.append('Type', formData.Type);
-      dataToSend.append('image', imageFile);
-      dataToSend.append('area', formData.area);
-      dataToSend.append('city', formData.city);
-      dataToSend.append('village', formData.village);
+      dataToSend.append("name", formData.name);
+      dataToSend.append("address", fullAddress);
+      dataToSend.append("description", formData.description);
+      dataToSend.append("Type", formData.Type);
+      dataToSend.append("image", imageFile);
+      dataToSend.append("area", formData.area);
+      dataToSend.append("city", formData.city);
+      dataToSend.append("village", formData.village);
 
-      const res = await fetch('/api/postsaction/createPost', {
-        method: 'POST',
-        credentials: 'include',
+      const res = await fetch("/api/postsaction/createPost", {
+        method: "POST",
+        credentials: "include",
         body: dataToSend,
       });
 
@@ -114,214 +164,51 @@ const PostFormWithImage = () => {
 
       if (data.success) {
         setSuccess(true);
-        alert('Post created successfully!');
-        setFormData({ name: '', area: '', city: '', village: '', description: '', Type: '' });
+        alert("Post created successfully!");
+        setFormData({ name: "", area: "", city: "", village: "", description: "", Type: "" });
         setImageFile(null);
         if (imagePreview) URL.revokeObjectURL(imagePreview);
         setImagePreview(null);
       } else {
-        setError(data.error || 'Failed to create post');
+        setError(data.error || "Failed to create post.");
       }
     } catch (err) {
-      console.error('Submit error:', err);
-      setError('Network error. Please try again.');
+      console.error("Submit error:", err);
+      setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-xl">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!isLoggedIn) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-          <p className="reg-terms">Please login to create a post</p>
-          <button
-            onClick={() => router.push('/loginPage')}
-            className="btn-primary reg-btn bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
-          >
-            Go to Login
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (authLoading) return <p>Loading...</p>;
+  if (!isLoggedIn) return <p>Please login to create a post</p>;
 
   return (
     <div className="postform-container">
       <form onSubmit={handleSubmit} className="postform-form">
-        <h2 className="postform-title">Donate Item</h2>
+        {error && <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>}
+        {success && <div className="bg-green-100 text-green-700 p-3 rounded">Post created successfully!</div>}
 
-        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">{error}</div>}
-        {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">Post created successfully!</div>}
+        <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required />
 
-        {/* Item Name */}
-        <div className='postform-itemname'>
-          <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">Item Name *</label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="e.g., Winter Jacket, Rice Bag, Laptop"
-            required
-            minLength={2}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-          />
-        </div>
+        <input type="file" accept="image/*" onChange={handleImageChange} required />
+        {checkingAI && <p>Checking image safety...</p>}
+        {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} />}
 
-        {/* Image Upload */}
-        <div className='postform-image border-t pt-6'>
-          <label htmlFor="image-upload" className="block text-sm font-semibold text-gray-700 mb-2">Upload Item Image * (Required)</label>
-          <input
-            type="file"
-            name="image-upload"
-            id="image-upload"
-            accept="image/*"
-            onChange={handleImageChange}
-            required
-            className="btn-upload-image"
-          />
-        </div>
+        <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />
+        <input type="text" name="area" ref={areaRef} value={formData.area} onChange={handleChange} placeholder="Area" required />
+        <input type="text" name="city" ref={cityRef} value={formData.city} onChange={handleChange} placeholder="City" required />
 
-        {/* Image Preview */}
-        {imagePreview && (
-          <div className="postform-imgpre mt-4">
-            <p className="text-sm font-medium text-gray-700 mb-2">Image Preview:</p>
-            <div className="w-full h-64 overflow-hidden rounded-lg shadow-md border-2 border-dashed border-gray-300">
-              <Image src={imagePreview} alt="Item Preview" width={300} height={300} className="w-full h-full object-cover" />
-            </div>
-          </div>
-        )}
+        <select name="Type" value={formData.Type} onChange={handleChange} required>
+          <option value="">Select Category</option>
+          {categories.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+        </select>
 
-        {/* Address Fields with Google Autocomplete */}
-        <div className="postform-address relative mt-1">
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Pickup Location *</label>
+        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" required />
 
-          <div className="mb-4">
-            <input
-              type="text"
-              name="village"
-              id="village"
-              ref={villageRef}
-              value={formData.village}
-              onChange={handleChange}
-              placeholder="Village, Street, or Nearest Landmark (Required)"
-              required
-              className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-            />
-          </div>
-
-          <div className="mb-4">
-            <input
-              type="text"
-              name="area"
-              id="area"
-              ref={areaRef}
-              value={formData.area}
-              onChange={handleChange}
-              placeholder="Area / Neighborhood (Required)"
-              required
-              className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-            />
-          </div>
-
-          <div className="mb-4">
-            <input
-              type="text"
-              name="city"
-              id="city"
-              ref={cityRef}
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="City / District (Required)"
-              required
-              className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-            />
-          </div>
-
-          {user?.phoneNumber && !formData.village.includes(user.phoneNumber) && (
-            <button
-              type="button"
-              onClick={() => setFormData(prev => ({ ...prev, village: `${prev.village}${prev.village ? ' - ' : ''}${user.phoneNumber}` }))}
-              className="btn-primary"
-            >
-              Add Phone to Pickup Details
-            </button>
-          )}
-        </div>
-
-        {/* Category */}
-        <div className='postform-cate'>
-          <label htmlFor="Type" className="block text-sm font-semibold text-gray-700 mb-1">Category *</label>
-          <div className="custom-select-container">
-            <button
-              type="button"
-              className={`custom-select-button ${!formData.Type ? 'placeholder' : ''} ${showCategoryDropdown ? 'open' : ''}`}
-              onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-            >
-              <span className="selected-text">
-                {formData.Type ? formData.Type.charAt(0).toUpperCase() + formData.Type.slice(1) : 'Select a category'}
-              </span>
-              <svg className="custom-select-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            {showCategoryDropdown && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowCategoryDropdown(false)} />
-                <div className="custom-select-dropdown">
-                  {categories.map(category => (
-                    <div
-                      key={category}
-                      className={`custom-select-option ${formData.Type === category ? 'selected' : ''}`}
-                      onClick={() => { handleChange({ target: { name: 'Type', value: category } }); setShowCategoryDropdown(false); }}
-                    >
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className='postform-decr'>
-          <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">Description *</label>
-          <textarea
-            name="description"
-            id="description"
-            rows="6"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Describe the item condition, size, and any other details..."
-            required
-            minLength={10}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 resize-y"
-          />
-        </div>
-
-        {/* Submit */}
-        <div className='postform-create pt-4'>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`btn-primary ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'}`}
-          >
-            {loading ? 'Publishing...' : 'Publish Post'}
-          </button>
-        </div>
+        <button type="submit" disabled={loading || checkingAI || !imageFile}>
+          {loading ? "Publishing..." : "Publish Post"}
+        </button>
       </form>
     </div>
   );

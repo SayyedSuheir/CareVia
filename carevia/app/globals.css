@@ -1731,6 +1731,7 @@ th {
 
     .cta-buttons {
         flex-direction: column;
+        gap:1rem;
     }
 
     .steps-container {
@@ -1742,7 +1743,7 @@ th {
         margin-bottom: 1.5rem;
     }
 }
-@media screen and (min-width:708px) {
+@media screen and (min-width:768px) {
  
   
   
@@ -1787,7 +1788,7 @@ th {
   /* padding: 20px 30px; */
   display: flex;
   justify-content: center;
-  
+  width:100%;
   border-bottom: 1px solid gold;
   
  
@@ -1853,7 +1854,7 @@ th {
 
 /* Adjust main content to account for sidebar */
 .main-content {
-  margin-left: 250px;
+  margin-left: 20%;
   transition: margin-left 0.3s ease;
 }
 
@@ -1941,6 +1942,148 @@ th {
           justify-content: flex-end;
           gap: 0.5rem;
         }
+
+        /* --- Form Container Styling --- */
+.postform-form {
+    /* Layout */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between form elements */
+    max-width: 500px; /* Limit the width for better readability */
+    margin: 40px auto; /* Center the form horizontally with vertical padding */
+    padding: 30px;
+    
+    /* Appearance */
+    background-color: #ffffff; /* White background */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    border-radius: 12px; /* Rounded corners for a modern look */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    font-family: Arial, sans-serif; /* Basic, readable font */
+}
+
+/* --- Input, Select, and Textarea Styling --- */
+.postform-form input[type="text"],
+.postform-form input[type="file"],
+.postform-form select,
+.postform-form textarea {
+    /* Sizing and Spacing */
+    width: 100%;
+    padding: 12px 15px;
+    margin: 0; /* Override any default margin */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    
+    /* Appearance */
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus State */
+.postform-form input[type="text"]:focus,
+.postform-form select:focus,
+.postform-form textarea:focus {
+    border-color: #007bff; /* Highlight focus with a primary color */
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Subtle glowing effect */
+}
+
+/* Placeholder Text */
+.postform-form ::placeholder {
+    color: #999999;
+    opacity: 1; /* For cross-browser consistency */
+}
+
+/* Textarea Specific Styling */
+.postform-form textarea {
+    min-height: 100px; /* Give more space for description */
+    resize: vertical; /* Allow vertical resizing */
+}
+
+/* --- File Input Specific Styling (since direct styling can be tricky) --- */
+.postform-form input[type="file"] {
+    /* You might want to wrap this in a custom label/div for more complex styling */
+    border: 1px solid #cccccc;
+    background-color: #f9f9f9;
+}
+
+
+/* --- Button Styling (Publish Post) --- */
+.postform-form button[type="submit"] {
+    /* Sizing and Spacing */
+    width: 100%;
+    padding: 14px 20px;
+    
+    /* Appearance */
+    background-color: #007bff; /* Primary action color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Hover/Active State */
+.postform-form button[type="submit"]:not(:disabled):hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Disabled State (loading or checking AI) */
+.postform-form button[type="submit"]:disabled {
+    background-color: #a0c3e8; /* Lighter/grayed-out color */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* --- Alert Messages (Error and Success) --- */
+/* The classes `bg-red-100`, `text-red-700`, `bg-green-100`, `text-green-700`, and `rounded` 
+   suggest Tailwind CSS is being used. Here is a pure CSS equivalent. */
+
+/* Error Message */
+.postform-form .bg-red-100 {
+    background-color: #fef2f2; /* Very light red/pink */
+    color: #b91c1c; /* Darker red text */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #fca5a5;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Success Message */
+.postform-form .bg-green-100 {
+    background-color: #f0fdf4; /* Very light green */
+    color: #15803d; /* Darker green text */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #86efac;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* --- Other Elements --- */
+
+/* Checking AI message */
+.postform-form p {
+    color: #6c757d; /* Gray text for info messages */
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Image Preview */
+/* Assuming the Image component renders a standard <img> tag, or you can adjust this selector */
+.postform-form img {
+    /* Ensure image fits within the form, even if the provided dimensions are large */
+    max-width: 100%; 
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover; /* Maintain aspect ratio */
+    align-self: center; /* Center the image preview */
+}
 
 }
 
