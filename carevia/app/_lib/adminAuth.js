@@ -1,38 +1,79 @@
-// ==========================================
-// Middleware: Admin Authentication Check
-// ==========================================
-// File: lib/adminAuth.js
-
 import jwt from "jsonwebtoken";
-// Helper function to check if user is admin
+
 function isAdmin(email) {
-  return email && email.endsWith('@carevia.com');
+  return typeof email === "string" && email.endsWith("@carevia.com");
 }
 
 export function verifyAdminToken(request) {
   try {
-    const token = request.cookies.get("sessionToken")?.value;
+    console.log("🔐 [AUTH] Starting verification...");
     
+    // Check all cookies
+    const allCookies = request.cookies.getAll();
+    console.log("🍪 [AUTH] All cookies:", allCookies.map(c => c.name));
+    
+    const token = request.cookies.get("sessionToken")?.value;
+    console.log("🍪 [AUTH] sessionToken exists:", !!token);
+    
+    if (token) {
+      console.log("🍪 [AUTH] Token preview:", token.substring(0, 30) + "...");
+    }
+
     if (!token) {
-      return { authorized: false, error: "No token provided" };
+      console.log("❌ [AUTH] No token found");
+      return {
+        authorized: false,
+        error: "Unauthorized: No token provided"
+      };
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.log("❌ [AUTH] JWT_SECRET missing!");
+      return {
+        authorized: false,
+        error: "Server error: JWT secret not configured"
+      };
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-     if (!isAdmin(decoded.email)) {
-      return { authorized: false, error: "Not an admin" };
+    console.log("✅ [AUTH] Token decoded:", { 
+      email: decoded.email, 
+      userId: decoded.userId || decoded.id 
+    });
+
+    if (!decoded?.email) {
+      console.log("❌ [AUTH] No email in token");
+      return {
+        authorized: false,
+        error: "Invalid token payload"
+      };
     }
 
-    return { 
-      authorized: true, 
-      userId: decoded.userId,
-      email: decoded.email 
+    const adminCheck = isAdmin(decoded.email);
+    console.log("👤 [AUTH] Admin check:", adminCheck, "for email:", decoded.email);
+
+    if (!adminCheck) {
+      console.log("❌ [AUTH] Not an admin email");
+      return {
+        authorized: false,
+        error: "Access denied: Admin only"
+      };
+    }
+
+    console.log("✅ [AUTH] Authorization successful!");
+    return {
+      authorized: true,
+      userId: decoded.userId || decoded.id,
+      email: decoded.email
     };
 
   } catch (error) {
-    return { 
-      authorized: false, 
-      error: error.message 
+    console.error("❌ [AUTH] Error:", error.message);
+    console.error("❌ [AUTH] Error type:", error.name);
+
+    return {
+      authorized: false,
+      error: "Invalid or expired token"
     };
   }
 }

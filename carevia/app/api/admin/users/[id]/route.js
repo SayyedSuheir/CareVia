@@ -1,71 +1,61 @@
-// File: app/api/admin/users/[id]/route.js
+// app/api/admin/users/[id]/route.js
 
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+import { verifyAdminToken } from "@/app/_lib/adminAuth";
 import connectDB from "@/app/_lib/mongodb";
 import Users from "@/app/_models/Users";
 import Goods from "@/app/_models/Goods";
 
-// Helper function to check if user is admin
-function isAdmin(email) {
-  return email && email.endsWith("@carevia.com");
-}
+export const runtime = "nodejs";
 
-export async function DELETE(request, { params }) {
+/**
+ * DELETE /api/admin/users/[id]
+ * Soft-deletes a user and their goods (mark deleted=true)
+ */
+export async function DELETE(request, context) {
+  console.log("🟥 [BACKEND] DELETE endpoint hit");
+
   try {
-    const token = request.cookies.get("sessionToken")?.value;
+    const params = await context.params;
+    console.log("🟥 [BACKEND] Params:", params);
+    
+    const auth = verifyAdminToken(request);
+    console.log("🟥 [BACKEND] Auth result:", auth);
 
-    if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+    if (!auth.authorized) {
+      console.log("🟥 [BACKEND] Auth FAILED:", auth.error);
+      return NextResponse.json({ error: auth.error }, { status: 403 });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (!isAdmin(decoded.email)) {
-      return NextResponse.json(
-        { error: "Access denied. Admin only." },
-        { status: 403 }
-      );
-    }
+    console.log("🟥 [BACKEND] Auth SUCCESS");
 
     await connectDB();
+    const userId = params?.id;
+    console.log("🟥 [BACKEND] Deleting user ID:", userId);
 
-    // ✅ params now exists
-    const userId = params.id;
+    const user = await Users.findByIdAndUpdate(
+      userId,
+      { deleted: true },
+      { new: true }
+    );
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "User ID required" },
-        { status: 400 }
-      );
+    console.log("🟥 [BACKEND] Update result:", user ? 'Found and updated' : 'Not found');
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const deletedUser = await Users.findByIdAndDelete(userId);
+    await Goods.updateMany({ userId: user._id }, { deleted: true });
 
-    if (!deletedUser) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
-
-    // ✅ Delete user's donations
-    await Goods.deleteMany({ userId });
-
+    console.log("🟥 [BACKEND] SUCCESS - returning response");
     return NextResponse.json({
       success: true,
-      message: "User deleted successfully"
+      message: "User marked as deleted",
+      userId: user._id
     });
 
   } catch (error) {
-    console.error("Delete user error:", error);
-
-    return NextResponse.json(
-      { error: "Failed to delete user" },
-      { status: 500 }
-    );
+    console.error("🟥 [BACKEND] ERROR:", error.message);
+    return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
   }
 }

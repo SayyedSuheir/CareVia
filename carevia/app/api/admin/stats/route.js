@@ -38,8 +38,11 @@ export async function GET(request) {
     await connectDB();
 
     // Get statistics
-    const totalUsers = await Users.countDocuments({ email: { $not: /@carevia\.com$/i } });
-    const totalDonations = await Goods.countDocuments();
+    const totalUsers = await Users.countDocuments({
+     email: { $not: /@carevia\.com$/i },
+     deleted: { $ne: true }   
+    });
+    const totalDonations = await Goods.countDocuments({deleted: { $ne: true }  });
     
     // Get recent activity (last 30 days)
     const thirtyDaysAgo = new Date();

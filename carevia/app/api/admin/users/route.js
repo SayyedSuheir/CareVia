@@ -38,8 +38,10 @@ export async function GET(request) {
 
     const skip = (page - 1) * limit;
 
-    // ✅ Build filter query
-    let query = {};
+    // ✅ Build filter query show only non-deleted users
+    let query = {
+      deleted: {$ne: true} 
+    };
 
     if (search) {
       query = {
@@ -80,3 +82,5 @@ export async function GET(request) {
     );
   }
 }
+
+

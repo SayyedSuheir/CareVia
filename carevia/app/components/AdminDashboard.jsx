@@ -8,119 +8,18 @@ function AdminDashboard() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   const router = useRouter();
   
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [stats, setStats] = useState({ totalUsers: 0, totalDonations: 0 });
+  const [activeTab, setActiveTab] = useState('users');
+ const [stats, setStats] = useState({ totalUsers: 0, totalDonations: 0 });
+  const [showModal, setShowModal] = useState(false);
+  const [userIdToDelete, setUserIdToDelete] = useState(null);
+
   const [users, setUsers] = useState([]);
-  const [donations, setDonations] = useState([]);
+const [loading, setLoading] = useState(false);
+const [donations, setDonations] = useState([]);
   const [reports, setReports] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [accessDenied, setAccessDenied] = useState(false);
-  const [bootstrapLoaded, setBootstrapLoaded] = useState(false);
 
-  const isAdmin = user && user.email && user.email.endsWith('@carevia.com');
-  const userToDelete = useRef(null);
 
-  // Load Bootstrap JS dynamically
-  useEffect(() => {
-    const loadBootstrap = async () => {
-      try {
-        if (typeof window !== 'undefined' && !window.bootstrap) {
-          await import('bootstrap/dist/js/bootstrap.bundle.min.js');
-          setBootstrapLoaded(true);
-        } else if (window.bootstrap) {
-          setBootstrapLoaded(true);
-        }
-      } catch (err) {
-        console.error('Failed to load Bootstrap:', err);
-      }
-    };
-
-    loadBootstrap();
-  }, []);
-
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isLoggedIn) {
-        router.push('/');
-      } else if (!isAdmin) {
-        setAccessDenied(true);
-      }
-    }
-  }, [isLoggedIn, isAdmin, authLoading, router]);
-
-  const openDeleteModal = (userId) => {
-    userToDelete.current = userId;
-    
-    if (!bootstrapLoaded || typeof window.bootstrap === "undefined") {
-      console.error("Bootstrap JS not loaded yet");
-      // Fallback: try to load Bootstrap again
-      import('bootstrap/dist/js/bootstrap.bundle.min.js')
-        .then(() => {
-          setBootstrapLoaded(true);
-          showModal();
-        })
-        .catch(err => console.error('Bootstrap load failed:', err));
-      return;
-    }
-    
-    showModal();
-  };
-
-  const showModal = () => {
-    const modalEl = document.getElementById("confirmDeleteModal");
-    if (!modalEl) {
-      console.error("Modal element not found");
-      return;
-    }
-
-    try {
-      const modal = new window.bootstrap.Modal(modalEl);
-      modal.show();
-    } catch (err) {
-      console.error("Error showing modal:", err);
-    }
-  };
-
-  const confirmDelete = async () => {
-    if (!userToDelete.current) return;
-
-    try {
-      await fetch(`/api/admin/users/${userToDelete.current}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      userToDelete.current = null;
-
-      const modalEl = document.getElementById("confirmDeleteModal");
-      const modalInstance = window.bootstrap?.Modal?.getInstance(modalEl);
-      if (modalInstance) {
-        modalInstance.hide();
-      }
-
-      fetchUsers();
-    } catch (err) {
-      console.error('Delete error:', err);
-    }
-  };
-
-  useEffect(() => {
-    if (activeTab === 'dashboard' && isAdmin) fetchStats();
-  }, [activeTab, isAdmin]);
-
-  useEffect(() => {
-    if (activeTab === 'users' && isAdmin) fetchUsers();
-  }, [activeTab, isAdmin]);
-
-  useEffect(() => {
-    if (activeTab === 'donations' && isAdmin) fetchDonations();
-  }, [activeTab, isAdmin]);
-
-  useEffect(() => {
-    if (activeTab === 'reports' && isAdmin) fetchReports();
-  }, [activeTab, isAdmin]);
-
-  const fetchStats = async () => {
+const fetchStats = async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/stats', { credentials: 'include' });
@@ -134,21 +33,73 @@ function AdminDashboard() {
     }
   };
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/users?page=1&limit=50', { credentials: 'include' });
-      const data = await res.json();
-      if (data.success) setUsers(data.users);
-      else if (res.status === 403) setAccessDenied(true);
-    } catch (err) {
-      console.error('Users fetch error:', err);
-    } finally {
-      setLoading(false);
+const fetchUsers = async () => {
+  setLoading(true);
+  try {
+    const res = await fetch('/api/admin/users?page=1&limit=50', { 
+      credentials: 'include' 
+    });
+    const data = await res.json();
+    if (data.success) {
+      setUsers(data.users);
+      console.log('Fetched users:', data.users);
     }
+  } catch (err) {
+    console.error('Fetch error:', err);
+  } finally {
+    setLoading(false);
+  }
+};
+  const isAdmin = user && user.email && user.email.endsWith('@carevia.com');
+// Fetch real users
+useEffect(() => {
+  if (isAdmin) {
+    fetchUsers();
+  }
+}, [isAdmin]);
+
+const handleRemoveClick = (userId) => {
+    console.log('Remove clicked for:', userId);
+    setUserIdToDelete(userId);
+    setShowModal(true);
   };
 
-  const fetchDonations = async () => {
+  const handleCancelDelete = () => {
+    console.log('Cancel clicked');
+    setShowModal(false);
+    setUserIdToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    console.log('Confirm delete clicked for:', userIdToDelete);
+    alert(`Deleting user: ${userIdToDelete}`);
+    
+    try {
+      const response = await fetch(`/api/admin/users/${userIdToDelete}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (response.ok) {
+        setUsers(users.filter(u => u._id !== userIdToDelete));
+        alert('User deleted successfully!');
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Network error');
+    }
+    
+    setShowModal(false);
+    setUserIdToDelete(null);
+  };
+
+const fetchDonations = async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/donations?page=1&limit=50', { credentials: 'include' });
@@ -162,7 +113,7 @@ function AdminDashboard() {
     }
   };
 
-  const fetchReports = async () => {
+const fetchReports = async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/reports?type=overview', { credentials: 'include' });
@@ -175,50 +126,84 @@ function AdminDashboard() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (activeTab === 'dashboard' && isAdmin) fetchStats();
+  }, [activeTab, isAdmin]);
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-      router.push('/');
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-  };
+  useEffect(() => {
+      if (activeTab === 'donations' && isAdmin) fetchDonations();
+    }, [activeTab, isAdmin]);
+  
+  useEffect(() => {
+    if (activeTab === 'reports' && isAdmin) fetchReports();
+  }, [activeTab, isAdmin]);
 
   const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric', month: '2-digit', day: '2-digit'
   });
 
-  if (authLoading) return <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh' }}><p>Loading...</p></div>;
-
-  if (accessDenied || !isAdmin) return (
-    <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center', height:'100vh', gap:'1rem' }}>
-      <h1>Access Denied</h1>
-      <p>Only users with @carevia.com email can access the admin dashboard.</p>
-      <button onClick={() => router.push('/')} style={{ padding:'0.5rem 1rem', background:'#007bff', color:'white', border:'none', borderRadius:'4px', cursor:'pointer' }}>Go to Home</button>
-    </div>
-  );
+  if (authLoading) return <div>Loading...</div>;
+  if (!isAdmin) return <div>Access Denied</div>;
 
   return (
-    <div className="admin-container">
-      {/* Delete Modal */}
-      <div className="modal fade" id="confirmDeleteModal" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Confirm Delete</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div className="modal-body">Are you sure you want to delete this user?</div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
+    <div style={{ padding: '20px' }}>
+      
+      
+      {/* Modal */}
+      {showModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <div style={{
+            background: 'white',
+            padding: '30px',
+            borderRadius: '10px',
+            minWidth: '300px'
+          }}>
+            <h3>Confirm Delete</h3>
+            <p>Delete user {userIdToDelete}?</p>
+            <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+              <button 
+                onClick={handleCancelDelete}
+                style={{
+                  padding: '10px 20px',
+                  background: 'gray',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleConfirmDelete}
+                style={{
+                  padding: '10px 20px',
+                  background: 'red',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                Delete
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Sidebar */}
+         {/* Sidebar */}
       <div className="admin-sidebar">
         {/* <div className="admin-sidebar-head">
           <div className="admin-logo"><h2><span style={{color:"white"}}>Care</span><span style={{color:"gold"}}>Via</span></h2></div>
@@ -233,10 +218,7 @@ function AdminDashboard() {
           </nav>
         </div>
       </div>
-
-      {/* Main Content */}
-      <main className="admin-main">
-        {/* Dashboard */}
+       {/* Dashboard */}
         <section className="dashboard" style={{display:activeTab==='dashboard'?'block':'none'}}>
           <div className="dashboard-title"><h2>Dashboard</h2></div>
           <div className="stats-cards">
@@ -245,35 +227,44 @@ function AdminDashboard() {
           </div>
         </section>
 
-        {/* Users */}
-        <section className="users-tab" style={{display:activeTab==='users'?'block':'none'}}>
-          <div className="users-tab-title"><h2>Users Management</h2></div>
-          <table className="users-tab-table">
-            <thead><tr><th>Name</th><th>Email</th><th>Remove</th></tr></thead>
-            <tbody>
-              {loading ? <tr><td colSpan="3" style={{textAlign:'center'}}>Loading...</td></tr> :
-                users.length>0 ? users.map(u=>(
-                  <tr key={u._id}>
-                    <td>{u.name}</td>
-                    <td>{u.email}</td>
-                    <td>
-                      <button 
-                        className="btn btn-danger btn-sm" 
-                        onClick={()=>openDeleteModal(u._id)}
-                        disabled={!bootstrapLoaded}
-                      >
-                        Remove User
-                      </button>
-                    </td>
-                  </tr>
-                )) :
-                <tr><td colSpan="3" style={{textAlign:'center'}}>No users found</td></tr>
-              }
-            </tbody>
-          </table>
-        </section>
 
-        {/* Donations */}
+      {/* Users Table */}
+      <section className="users-tab" style={{display:activeTab==='users'?'block':'none'}}>
+        <table style={{ width: '100%', marginTop: '20px', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#2BB0A8', color: 'white' }}>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Name</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Email</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map(u => (
+              <tr key={u._id}>
+                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{u.name}</td>
+                <td style={{ padding: '10px', border: '1px solid #ddd' }}>{u.email}</td>
+                <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                  <button 
+                    onClick={() => handleRemoveClick(u._id)}
+                    style={{
+                      padding: '5px 15px',
+                      background: 'red',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+       {/* Donations */}
         <section className="donations-tab" style={{display:activeTab==='donations'?'block':'none'}}>
           <h2>Donations Management</h2>
           <table>
@@ -307,7 +298,6 @@ function AdminDashboard() {
             ) : <p>Reports content goes here...</p>
           }
         </section>
-      </main>
     </div>
   );
 }

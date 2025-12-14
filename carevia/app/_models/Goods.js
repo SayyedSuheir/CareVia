@@ -56,6 +56,11 @@ const goodsSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    deleted:{
+      type:Boolean,
+      required:false,
+      default:false
+    }
   },
   { timestamps: true }
 );
