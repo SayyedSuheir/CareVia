@@ -6,19 +6,20 @@ import { useState, useEffect, useContext } from "react";
 import { FilterContext } from "../_context/FilterContext";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-
+import toast, { Toaster } from "react-hot-toast";
 
 function Card() {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
-
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === "/homePage";
   const context = useContext(FilterContext);
+
   if (!context) {
-  throw new Error("Card must be used inside a FilterProvider");
+    throw new Error("Card must be used inside a FilterProvider");
   }
-  const { filters} = useContext(FilterContext);
+
+  const { filters } = useContext(FilterContext);
 
   const [allPosts, setAllPosts] = useState([]);
   const [posts, setPosts] = useState([]);
@@ -29,32 +30,31 @@ function Card() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        if (authLoading)  return;
-
+        if (authLoading) return;
         if (pathname === "/needs" && (!user || !user.id)) return;
 
-          let endpoint;
+        let endpoint;
+        if (isHome) {
+          endpoint = "/api/postsaction/all";
+        } else if (pathname === "/needs") {
+          endpoint = `/api/requests/requestedItem?userId=${user.id}`;
+        } else {
+          endpoint = "/api/postsaction/user";
+        }
 
-          if (isHome) {
-            endpoint = "/api/postsaction/all";
-          } else if (pathname === "/needs") {
-            endpoint = `/api/requests/requestedItem?userId=${user.id}`;
-          } else {
-            endpoint = "/api/postsaction/user";
-          }
+        const res = await fetch(endpoint, { credentials: "include" });
+        const data = await res.json();
 
-          const res = await fetch(endpoint, { credentials: "include" });
-          const data = await res.json();
-
-          if (data.success) {
-            setAllPosts(data.posts); // store fetched posts
-          } else {
-            setError(data.error);
-          }
-        
+        if (data.success) {
+          setAllPosts(data.posts);
+        } else {
+          setError(data.error);
+          toast.error(data.error);
+        }
       } catch (err) {
         console.error("Fetch posts error:", err);
         setError("Failed to load posts");
+        toast.error("Failed to load posts");
       } finally {
         setLoading(false);
       }
@@ -68,16 +68,15 @@ function Card() {
     let filtered = allPosts;
 
     if (filters.city) {
-    filtered = filtered.filter(
-    (post) =>
-      post.city?.toLowerCase() === filters.city.toLowerCase() ||
-      post.area?.toLowerCase().includes(filters.city.toLowerCase()) ||
-      post.village?.toLowerCase().includes(filters.city.toLowerCase())
-    );
-  }
+      filtered = filtered.filter(
+        (post) =>
+          post.city?.toLowerCase() === filters.city.toLowerCase() ||
+          post.area?.toLowerCase().includes(filters.city.toLowerCase()) ||
+          post.village?.toLowerCase().includes(filters.city.toLowerCase())
+      );
+    }
 
     if (filters.type) {
-      // Fix case-sensitive key
       filtered = filtered.filter((post) => post.Type === filters.type);
     }
 
@@ -87,13 +86,13 @@ function Card() {
   const handleNeeds = async (post) => {
     try {
       if (!user?.id) {
-        alert("You must be logged in to request an item.");
+        toast.error("You must be logged in to request an item.");
         router.push("/loginPage");
         return;
       }
 
       if (!post?.id) {
-        alert("Invalid item. Please try again.");
+        toast.error("Invalid item. Please try again.");
         return;
       }
 
@@ -106,21 +105,22 @@ function Card() {
       const result = await res.json();
 
       if (!res.ok) {
-        alert(result.error || "Something went wrong");
+        toast.error(result.error || "Something went wrong");
         return;
       }
 
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== post.id));
-      alert("Item requested successfully! You have 24 hours to pick it up.");
+      toast.success("Item requested successfully! You have 24 hours to pick it up.");
       router.push("/homePage");
     } catch (error) {
       console.error(error);
-      alert("Error sending request");
+      toast.error("Error sending request");
     }
   };
 
   const handleDelete = async (postId) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`/api/postsaction/${postId}`, {
@@ -132,13 +132,13 @@ function Card() {
 
       if (data.success) {
         setPosts(posts.filter((post) => post.id !== postId));
-        alert("Post deleted successfully");
+        toast.success("Post deleted successfully");
       } else {
-        alert(data.error || "Failed to delete post");
+        toast.error(data.error || "Failed to delete post");
       }
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete post");
+      toast.error("Failed to delete post");
     }
   };
 
@@ -192,51 +192,38 @@ function Card() {
   }
 
   return (
-    <div className="homepage" style={{display:'flex', flexDirection: 'column'}}>
-    
+    <div className="homepage" style={{ display: "flex", flexDirection: "column" }}>
+      <Toaster position="top-right" />
+
       {pathname !== "/homepage" && (
-          <h2 className="posts-number" >
-            {pathname === "/needs"
-              ? `My Needs (${posts.length})`
-              : !isHome
-              ? `My Posts (${posts.length})`
-              : null}
-          </h2>
-        )}
+        <h2 className="posts-number">
+          {pathname === "/needs"
+            ? `My Needs (${posts.length})`
+            : !isHome
+            ? `My Posts (${posts.length})`
+            : null}
+        </h2>
+      )}
 
       <div className="card-container">
-        
-
         {posts.map((post) => (
-          <div
-            key={post.id}
-            
-          >
+          <div key={post.id}>
             <div className="card">
               <div className="card-title">
-                <h2>
-                    {post.name}
-                  </h2>
-                </div>
+                <h2>{post.name}</h2>
+              </div>
               <div className="image-container card-img-top">
                 <Image
                   src={post.image || "/defaultGoods.png"}
                   alt={post.name}
                   width={300}
                   height={200}
-                  
                 />
-                <div className="card-title">
-                  {post.Type}
-                </div>
+                <div className="card-title">{post.Type}</div>
               </div>
 
               <div className="card-body">
-                
-
-                <p className="card-text">
-                  {post.description}
-                </p>
+                <p className="card-text">{post.description}</p>
 
                 <div className="card-text">
                   <svg
@@ -277,15 +264,14 @@ function Card() {
                   </button>
                 ) : pathname === "/needs" ? (
                   <div className="card-text">
-                    Requested at:{" "}
-                    {new Date(post.requestedAt).toLocaleDateString()}
+                    Requested at: {new Date(post.requestedAt).toLocaleDateString()}
                   </div>
                 ) : (
                   <div className="mydonation-controles">
                     <div className="btn-delete">
                       <button
                         onClick={() => handleDelete(post.id)}
-                        className="btn-primary "
+                        className="btn-primary"
                       >
                         Delete
                       </button>

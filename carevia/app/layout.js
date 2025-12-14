@@ -9,6 +9,7 @@ import { UserProvider } from './_context/UserContext'
 import BottomNavbar from "./components/BottomNavbar";
 import { FilterProvider } from "./_context/FilterContext";
 import SideNavbar from "./components/SideNav";
+import { Toaster } from 'react-hot-toast';
 
 function NavbarWrapper() {
   const { isLoggedIn } = useAuth()
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
         <BootstrapClient />
         <NavbarWrapper />
          <BottomNavbar/>
+          <Toaster position="top-right" reverseOrder={false} />
          {children}
          </FilterProvider>
         </UserProvider>

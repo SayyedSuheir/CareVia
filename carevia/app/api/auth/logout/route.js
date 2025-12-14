@@ -1,3 +1,48 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: User authentication and session management
+ */
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     description: Clears the session cookie and logs the user out.
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Logout successful
+ *       500:
+ *         description: Logout failed
+ *
+ *   get:
+ *     summary: Logout user via redirect
+ *     description: >
+ *       Logs out the user by clearing the session cookie and redirects
+ *       to the home or login page.
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirect after logout
+ *       500:
+ *         description: Logout failed
+ */
+
+
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 

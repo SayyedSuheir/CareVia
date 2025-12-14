@@ -3,6 +3,8 @@
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
+import toast from "react-hot-toast";
+
 import { UserContext } from "../_context/UserContext";
 
 function Register() {
@@ -130,48 +132,7 @@ function Register() {
     setShowDropdown(false);
   };
 
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   if (!isFormReady) return;
 
-//   setIsSubmitting(true);
-//   setError("");
-
-//   const dataToSubmit = {
-//     name: formData.name,
-//     email: formData.email,
-//     password: formData.password,
-//     phoneNumber: formData.countryCode + formData.phone,
-//     terms: formData.terms,
-//   };
-
-//   try {
-//     const response = await fetch("/api/register", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       credentials: "include",
-//       body: JSON.stringify(dataToSubmit),
-//     });
-
-//     const result = await response.json();
-//     await fetch("/api/auth/session", {
-//       credentials: "include"
-//     });
-//     // ✅ This is where you update the context after successful registration
-//     if (response.ok) {
-//       setUser(result.user);         // store user in context
-//       setIsLoggedIn(true);          // update logged-in state
-//       router.push("/homePage");             // redirect to home page
-//     } else {
-//       setError(result.error || "Registration failed. Please try again.");
-//     }
-//   } catch (error) {
-//     console.error("Registration error:", error);
-//     setError("Network error. Please check your connection and try again.");
-//   } finally {
-//     setIsSubmitting(false);
-//   }
-// };
 
 
 
@@ -207,21 +168,18 @@ function Register() {
       throw new Error(result.error || "Registration failed");
     }
 
-    // ✅ Ensure session cookie is finalized
-    // await fetch("/api/auth/session", {
-    //   credentials: "include",
-    // });
+   
 
     // ✅ Update auth context safely
     setUser(result.user);
     setIsLoggedIn(true);
-
+     toast.success("Account created successfully!");
     // ✅ Redirect AFTER session + context hydrate
     router.push("/homePage");
 
   } catch (error) {
     console.error("Registration error:", error);
-    setError(error.message || "Network error. Please try again.");
+    toast.error(error.message || "Network error. Please try again.");
   } finally {
     setIsSubmitting(false);
   }

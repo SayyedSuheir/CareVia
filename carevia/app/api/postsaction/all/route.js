@@ -1,3 +1,96 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Public posts for homepage
+ */
+
+/**
+ * @swagger
+ * /api/postsaction/all:
+ *   get:
+ *     summary: Fetch all public posts
+ *     description: Retrieves all public posts with optional filters for city and type. Excludes posts requested by the current user.
+ *     tags: [Posts]
+ *     parameters:
+ *       - name: city
+ *         in: query
+ *         required: false
+ *         description: Filter posts by city
+ *         schema:
+ *           type: string
+ *       - name: type
+ *         in: query
+ *         required: false
+ *         description: Filter posts by type
+ *         schema:
+ *           type: string
+ *       - name: sessionToken
+ *         in: cookie
+ *         required: false
+ *         description: Optional JWT session token for identifying user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of posts retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: integer
+ *                   example: 10
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       userId:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       Type:
+ *                         type: string
+ *                       address:
+ *                         type: string
+ *                       city:
+ *                         type: string
+ *                       area:
+ *                         type: string
+ *                       village:
+ *                         type: string
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *       500:
+ *         description: Failed to fetch posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Failed to fetch posts
+ */
+
 import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';

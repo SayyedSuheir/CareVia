@@ -1,3 +1,60 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Locations
+ *   description: Locations and regional grouping
+ */
+
+/**
+ * @swagger
+ * /api/locations:
+ *   get:
+ *     summary: Get available cities grouped by region
+ *     description: >
+ *       Returns a list of cities grouped by Lebanese regions.
+ *       Data is derived from existing goods records.
+ *     tags: [Locations]
+ *     responses:
+ *       200:
+ *         description: Locations grouped by region
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 locations:
+ *                   type: object
+ *                   additionalProperties:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   example:
+ *                     Beirut:
+ *                       - Beirut
+ *                     Beqaa:
+ *                       - Baalbek
+ *                       - Zahle
+ *                     South:
+ *                       - Tyre
+ *                       - Saida
+ *                     North:
+ *                       - Tripoli
+ *                     Mount Lebanon:
+ *                       - Jounieh
+ *       500:
+ *         description: Failed to load locations
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to load locations
+ */
+
+
+
 import Goods from "@/app/_models/Goods";
 import connectDB from "@/app/_lib/mongodb";
 import { NextResponse } from "next/server";

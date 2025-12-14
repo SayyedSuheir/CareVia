@@ -2,6 +2,117 @@
 // API: /api/admin/reports - Reports & Analytics
 // ==========================================
 // File: app/api/admin/reports/route.js
+/**
+ * @swagger
+ * tags:
+ *   name: AdminReports
+ *   description: Admin analytics & reporting endpoints
+ */
+
+/**
+ * @swagger
+ * /api/admin/reports:
+ *   get:
+ *     summary: Get admin reports and analytics
+ *     description: >
+ *       Returns analytics data such as total users, total donations,
+ *       donation distribution, growth statistics, and top donors.
+ *       Accessible only to admin users.
+ *     tags: [AdminReports]
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *           enum: [overview]
+ *           default: overview
+ *         description: Type of report to generate
+ *     responses:
+ *       200:
+ *         description: Report generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 reportType:
+ *                   type: string
+ *                   example: overview
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalUsers:
+ *                       type: integer
+ *                       example: 150
+ *                     totalDonations:
+ *                       type: integer
+ *                       example: 320
+ *                     donationsByType:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                             example: clothes
+ *                           count:
+ *                             type: integer
+ *                             example: 42
+ *                     userGrowth:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: object
+ *                             properties:
+ *                               year:
+ *                                 type: integer
+ *                                 example: 2025
+ *                               month:
+ *                                 type: integer
+ *                                 example: 6
+ *                           count:
+ *                             type: integer
+ *                             example: 12
+ *                     donationGrowth:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: object
+ *                             properties:
+ *                               year:
+ *                                 type: integer
+ *                               month:
+ *                                 type: integer
+ *                           count:
+ *                             type: integer
+ *                     topDonors:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                             example: John Doe
+ *                           email:
+ *                             type: string
+ *                             example: john@carevia.com
+ *                           donationCount:
+ *                             type: integer
+ *                             example: 15
+ *       401:
+ *         description: Unauthorized – missing or invalid token
+ *       403:
+ *         description: Forbidden – admin access required
+ *       500:
+ *         description: Failed to generate report
+ */
 
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";

@@ -1,3 +1,170 @@
+// /api/requests/user
+/**
+ * @swagger
+ * tags:
+ *   name: RequestedItems
+ *   description: Manage "Need It" requests for logged-in users
+ */
+
+/**
+ * @swagger
+ * /api/requests/user:
+ *   get:
+ *     summary: Get all requested items for the logged-in user
+ *     description: Fetch all requested items with optional filters. Categorizes into active, expired, and picked up.
+ *     tags: [RequestedItems]
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, picked_up, expired, cancelled]
+ *         description: Filter requests by status (optional)
+ *       - in: query
+ *         name: includeExpired
+ *         schema:
+ *           type: boolean
+ *         description: Include expired items in results (default: false)
+ *     responses:
+ *       200:
+ *         description: List of requested items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     all:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/RequestedItem'
+ *                     active:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/RequestedItem'
+ *                     expired:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/RequestedItem'
+ *                     pickedUp:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/RequestedItem'
+ *                 count:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                     active:
+ *                       type: integer
+ *                     expired:
+ *                       type: integer
+ *                     pickedUp:
+ *                       type: integer
+ *       401:
+ *         description: Unauthorized (not logged in)
+ *       500:
+ *         description: Internal server error
+ *
+ *   patch:
+ *     summary: Update the status of a requested item
+ *     description: Allows logged-in users to update their request status (pending, picked_up, expired, cancelled)
+ *     tags: [RequestedItems]
+ *     parameters:
+ *       - in: query
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the requested item to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, picked_up, expired, cancelled]
+ *                 example: picked_up
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *                 message:
+ *                   type: string
+ *                   example: Item marked as picked_up
+ *       400:
+ *         description: Missing or invalid parameters
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Item not found or unauthorized
+ *       500:
+ *         description: Internal server error
+ *
+ * components:
+ *   schemas:
+ *     RequestedItem:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         requestedAt:
+ *           type: string
+ *           format: date-time
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *         status:
+ *           type: string
+ *           enum: [pending, picked_up, expired, cancelled]
+ *         timeRemaining:
+ *           type: integer
+ *           description: Minutes remaining until expiration
+ *         isExpired:
+ *           type: boolean
+ *         goods:
+ *           type: object
+ *           nullable: true
+ *           properties:
+ *             id:
+ *               type: string
+ *             name:
+ *               type: string
+ *             description:
+ *               type: string
+ *             image:
+ *               type: string
+ *             type:
+ *               type: string
+ *             address:
+ *               type: string
+ */
+
 import RequestedItem from '@/app/_models/requesteditems';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';

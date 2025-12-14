@@ -1,3 +1,100 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: User authentication and registration
+ */
+
+/**
+ * @swagger
+ * /api/auth/google:
+ *   post:
+ *     summary: Authenticate or register user with Google
+ *     description: >
+ *       Authenticates a user using Google OAuth data.
+ *       If the user already exists, it logs them in.
+ *       If not, it creates a new user account with verified status.
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - googleId
+ *               - email
+ *               - name
+ *             properties:
+ *               googleId:
+ *                 type: string
+ *                 example: "103948573920485739204"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "user@gmail.com"
+ *               name:
+ *                 type: string
+ *                 example: "Jane Doe"
+ *               avatar:
+ *                 type: string
+ *                 example: "https://lh3.googleusercontent.com/a/avatar.jpg"
+ *     responses:
+ *       200:
+ *         description: Login successful (existing user)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 64e9c8b7a12f3a9c12345678
+ *                     name:
+ *                       type: string
+ *                       example: jane doe
+ *                     email:
+ *                       type: string
+ *                       example: user@gmail.com
+ *                     avatar:
+ *                       type: string
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: true
+ *       201:
+ *         description: Registration successful (new user)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Registration successful
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     avatar:
+ *                       type: string
+ *                     isVerified:
+ *                       type: boolean
+ *       400:
+ *         description: Missing required Google account information
+ *       500:
+ *         description: Authentication failed
+ */
 
 import Users from '../../../_models/Users';
 import connectDB from '@/app/_lib/mongodb';

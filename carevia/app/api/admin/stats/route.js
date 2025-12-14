@@ -2,6 +2,56 @@
 // API: /api/admin/stats - Dashboard Statistics
 // ==========================================
 // File: app/api/admin/stats/route.js
+/**
+ * @swagger
+ * tags:
+ *   name: AdminStats
+ *   description: Admin dashboard statistics
+ */
+
+/**
+ * @swagger
+ * /api/admin/stats:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     description: >
+ *       Returns key metrics for the admin dashboard including
+ *       total users, total donations, and activity from the last 30 days.
+ *       Accessible only by admin users.
+ *     tags: [AdminStats]
+ *     responses:
+ *       200:
+ *         description: Statistics fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 stats:
+ *                   type: object
+ *                   properties:
+ *                     totalUsers:
+ *                       type: integer
+ *                       example: 245
+ *                     totalDonations:
+ *                       type: integer
+ *                       example: 520
+ *                     newUsersThisMonth:
+ *                       type: integer
+ *                       example: 18
+ *                     newDonationsThisMonth:
+ *                       type: integer
+ *                       example: 34
+ *       401:
+ *         description: Unauthorized – missing or invalid session token
+ *       403:
+ *         description: Forbidden – admin access required
+ *       500:
+ *         description: Failed to fetch statistics
+ */
 
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -13,6 +63,7 @@ import Goods from "@/app/_models/Goods";
 function isAdmin(email) {
   return email && email.endsWith('@carevia.com');
 }
+
 export async function GET(request) {
   try {
     // Verify admin authentication

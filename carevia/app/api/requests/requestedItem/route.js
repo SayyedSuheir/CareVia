@@ -1,4 +1,148 @@
 // app/api/requests/requestedItem/route.js
+/**
+ * @swagger
+ * tags:
+ *   name: Requests
+ *   description: Manage "Need It" item requests
+ */
+
+/**
+ * @swagger
+ * /api/requests/requestedItem:
+ *   post:
+ *     summary: Create a new requested item
+ *     description: Allows a user to request an item. Each request expires in 24 hours.
+ *     tags: [Requests]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - goodsId
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: 64a1234567890abcdef12345
+ *               goodsId:
+ *                 type: string
+ *                 example: 64a1234567890abcdef67890
+ *     responses:
+ *       201:
+ *         description: Request created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/RequestedItem'
+ *                 message:
+ *                   type: string
+ *                   example: Item requested successfully. You have 24 hours to pick it up.
+ *       400:
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       409:
+ *         description: Request already exists and is active
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *
+ *   get:
+ *     summary: Fetch all requested items for a user
+ *     description: Returns active requests (not expired) for a specific user.
+ *     tags: [Requests]
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID to fetch requests for
+ *     responses:
+ *       200:
+ *         description: List of requested items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *                       type:
+ *                         type: string
+ *                       address:
+ *                         type: string
+ *                       requestedAt:
+ *                         type: string
+ *                         format: date-time
+ *                       expiresAt:
+ *                         type: string
+ *                         format: date-time
+ *                       status:
+ *                         type: string
+ *       400:
+ *         description: Missing userId query parameter
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     RequestedItem:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         userId:
+ *           type: string
+ *         goodsId:
+ *           type: string
+ *         requestedAt:
+ *           type: string
+ *           format: date-time
+ *         expiresAt:
+ *           type: string
+ *           format: date-time
+ *         status:
+ *           type: string
+ *           example: pending
+ */
+
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectDB from "@/app/_lib/mongodb";

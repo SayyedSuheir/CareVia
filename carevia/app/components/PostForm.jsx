@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useAuth } from "@/app/_context/useAuth";
 import { useRouter } from "next/navigation";
-
+import toast from 'react-hot-toast';
 const PostFormWithImage = () => {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -164,7 +164,7 @@ const PostFormWithImage = () => {
 
       if (data.success) {
         setSuccess(true);
-        alert("Post created successfully!");
+        toast.success("Post created successfully!");
         setFormData({ name: "", area: "", city: "", village: "", description: "", Type: "" });
         setImageFile(null);
         if (imagePreview) URL.revokeObjectURL(imagePreview);

@@ -1,3 +1,128 @@
+// /api/postaction/[id]
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Post management for users
+ */
+
+/**
+ * @swagger
+ * /api/postaction/{id}:
+ *   get:
+ *     summary: Get a single post by ID
+ *     description: Returns a post owned by the authenticated user
+ *     tags: [Posts]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the post
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Post retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 post:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     image:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     Type:
+ *                       type: string
+ *                     address:
+ *                       type: string
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not owner)
+ *       404:
+ *         description: Post not found
+ *
+ *   put:
+ *     summary: Update a post
+ *     description: Updates a post owned by the authenticated user. Supports FormData for image upload
+ *     tags: [Posts]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the post to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               Type:
+ *                 type: string
+ *                 enum: [food, clothes, electronics, furniture, other]
+ *               address:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ *       400:
+ *         description: Validation errors
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not owner)
+ *       404:
+ *         description: Post not found
+ *
+ *   delete:
+ *     summary: Delete a post
+ *     description: Deletes a post owned by the authenticated user
+ *     tags: [Posts]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the post to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden (not owner)
+ *       404:
+ *         description: Post not found
+ */
+
 import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';

@@ -1,4 +1,50 @@
 // app/api/filters/type/route.js
+/**
+ * @swagger
+ * tags:
+ *   name: Filters
+ *   description: Filters and lookup values
+ */
+
+/**
+ * @swagger
+ * /api/filters/type:
+ *   get:
+ *     summary: Get available goods types
+ *     description: >
+ *       Returns a list of distinct goods types used in donations.
+ *       Used for filtering items by category.
+ *     tags: [Filters]
+ *     responses:
+ *       200:
+ *         description: List of available goods types
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 types:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example:
+ *                     - Clothes
+ *                     - Food
+ *                     - Furniture
+ *                     - Electronics
+ *       500:
+ *         description: Failed to fetch types
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Failed to fetch types
+ */
+
+
 import connectDB from "@/app/_lib/mongodb"; // your MongoDB connection
 import Goods from "@/app/_models/Goods"; // your Goods model
 

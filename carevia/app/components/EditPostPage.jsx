@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/app/_context/useAuth';
 import { useRouter, useParams } from 'next/navigation';
-
+import toast from 'react-hot-toast';
 const EditPostPage = () => {
   const { isLoggedIn, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -122,7 +122,7 @@ const EditPostPage = () => {
 
       if (data.success) {
         setSuccess(true);
-        alert('Post updated successfully!');
+        toast.success('Post updated successfully!');
         router.push('/myDonation'); // Redirect to posts list
       } else {
         setError(data.error || 'Failed to update post');

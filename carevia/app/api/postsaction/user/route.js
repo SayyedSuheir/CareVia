@@ -1,3 +1,82 @@
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Operations related to user posts
+ */
+
+/**
+ * @swagger
+ * /api/posts/user:
+ *   get:
+ *     summary: Fetch all posts for the logged-in user
+ *     description: Returns all posts created by the authenticated user, sorted by creation date (most recent first).
+ *     tags: [Posts]
+ *     responses:
+ *       200:
+ *         description: User posts fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: integer
+ *                   example: 3
+ *                 posts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       userId:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       Type:
+ *                         type: string
+ *                       address:
+ *                         type: string
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *       401:
+ *         description: Unauthorized or invalid session
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ */
+
 import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';

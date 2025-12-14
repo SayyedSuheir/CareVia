@@ -1,3 +1,93 @@
+/**
+ * @swagger
+ * tags:
+ *   name: AdminUsers
+ *   description: Admin user management
+ */
+
+/**
+ * @swagger
+ * /api/admin/users:
+ *   get:
+ *     summary: Get paginated list of users
+ *     description: >
+ *       Returns a paginated list of non-deleted users.
+ *       Supports searching by name, email, or phone number.
+ *       Admin access only.
+ *     tags: [AdminUsers]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *         description: Number of users per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search users by name, email, or phone number
+ *     responses:
+ *       200:
+ *         description: Users fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 users:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                         example: 64e9c8b7a12f3a9c12345678
+ *                       name:
+ *                         type: string
+ *                         example: Jane Doe
+ *                       email:
+ *                         type: string
+ *                         example: jane@example.com
+ *                       phoneNumber:
+ *                         type: string
+ *                         example: "+96170123456"
+ *                       createdAt:
+ *                         type: string
+ *                         example: 2025-01-15T10:22:00.000Z
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 50
+ *                     total:
+ *                       type: integer
+ *                       example: 120
+ *                     pages:
+ *                       type: integer
+ *                       example: 3
+ *       401:
+ *         description: Unauthorized – missing or invalid session token
+ *       403:
+ *         description: Forbidden – admin access required
+ *       500:
+ *         description: Failed to fetch users
+ */
+
+
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import connectDB from "@/app/_lib/mongodb";

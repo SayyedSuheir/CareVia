@@ -1,3 +1,137 @@
+// /api/createpost
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Post creation and management
+ */
+
+/**
+ * @swagger
+ * /api/createpost:
+ *   post:
+ *     summary: Create a new post
+ *     description: Creates a new post for a logged-in user, including image upload with AI validation.
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the item (min 2 characters)
+ *               description:
+ *                 type: string
+ *                 description: Description of the item (min 10 characters)
+ *               Type:
+ *                 type: string
+ *                 description: Type of item (food, clothes, electronics, furniture, other)
+ *               address:
+ *                 type: string
+ *                 description: Detailed address (min 5 characters)
+ *               city:
+ *                 type: string
+ *                 description: City name
+ *               area:
+ *                 type: string
+ *                 description: Area name
+ *               village:
+ *                 type: string
+ *                 description: Village name
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file (JPG, PNG, GIF, WebP, max 5MB)
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Post created successfully
+ *                 post:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     userId:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     image:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     Type:
+ *                       type: string
+ *                     address:
+ *                       type: string
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Validation error or missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized (invalid or missing session)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *       409:
+ *         description: Duplicate post exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ */
+
 import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
 import { NextResponse } from 'next/server';
