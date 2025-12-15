@@ -93,7 +93,7 @@ export async function GET(request) {
      email: { $not: /@carevia\.com$/i },
      deleted: { $ne: true }   
     });
-    const totalDonations = await Goods.countDocuments({deleted: { $ne: true }  });
+    const totalDonations = await Goods.countDocuments({deleted: { $ne: true }, status: { $nin: ["rejected", "pending"] }  });
     
     // Get recent activity (last 30 days)
     const thirtyDaysAgo = new Date();

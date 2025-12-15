@@ -13,6 +13,7 @@ const PostFormWithImage = () => {
     name: "",
     area: "",
     city: "",
+    image: "",
     village: "",
     description: "",
     Type: "",
@@ -31,6 +32,7 @@ const PostFormWithImage = () => {
   const areaRef = useRef(null);
   const cityRef = useRef(null);
   const villageRef = useRef(null);
+  const imageInputRef = useRef(null);
   let autocompleteArea, autocompleteCity, autocompleteVillage;
 
   useEffect(() => {
@@ -169,10 +171,13 @@ if (!data.success) {
       if (data.success) {
         setSuccess(true);
         toast.success("Post created successfully!");
-        setFormData({ name: "", area: "", city: "", village: "", description: "", Type: "" });
+        setFormData({ name: "", area: "", city: "",image: "", village: "", description: "", Type: "" });
         setImageFile(null);
         if (imagePreview) URL.revokeObjectURL(imagePreview);
         setImagePreview(null);
+        if (imageInputRef.current) {
+       imageInputRef.current.value = ""; // <-- clear the file input
+      }
       } else {
         setError(data.error || "Failed to create post.");
       }
@@ -211,9 +216,9 @@ if (!data.success) {
               <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required />
             </div>
             <div className="postform-input-image">
-              <input type="file" accept="image/*" onChange={handleImageChange} required />
+              <input type="file" accept="image/*" onChange={handleImageChange}  ref={imageInputRef} required />
               {checkingAI && <p>Checking image safety...</p>}
-              {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} className="imgpre" />}
+              {imagePreview && <Image src={imagePreview} alt="preview" width={200} height={200} className="imgpre" />}
             </div>
             <div className="postform-input-village">
              <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />

@@ -270,7 +270,13 @@ display: flex;
   
 }
 .text-center{
-  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10%;
+  width:80%;
+  margin-top: 3%;
+  
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   
 }
 .text-center a{
@@ -682,20 +688,25 @@ font-weight: 700;
   text-align: center;
   color:var(--color-primary);
  
-  position: sticky; /* Keep title visible while scrolling */
-  top: 0;
+  
   background-color: var(--color-light-gray); /* Match body background */
   /* padding: 1rem 0; */
-  z-index: 10;
+  
 }
 
-.postform-form{
-  width:100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  
-  
+.postform-form {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 70%;
+    max-width: 600px; /* prevents it from stretching too wide */
+    font-family: Arial, sans-serif;
+    display: flex;
+    box-shadow: 0 4px 15px #0000000d;
+    margin: 0 auto; /* center horizontally */
 }
 
 .postform-imgpre{
@@ -1253,7 +1264,10 @@ th {
   margin-top: 3%;
 }
 
-
+.make-first-donation{
+  color:var(--color-primary) !important;
+  font-weight: 700;
+}
 
 .filter-wrapper {
   position: relative;
@@ -2100,22 +2114,7 @@ th {
         }
 
         /* --- Form Container Styling --- */
-.postform-form {
-    /* Layout */
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Spacing between form elements */
-    max-width: 500px; /* Limit the width for better readability */
-    margin: 40px auto; /* Center the form horizontally with vertical padding */
-    padding: 30px;
-    
-    /* Appearance */
-    background-color: #ffffff; /* White background */
-    border: 1px solid #e0e0e0; /* Subtle border */
-    border-radius: 12px; /* Rounded corners for a modern look */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Soft shadow */
-    font-family: Arial, sans-serif; /* Basic, readable font */
-}
+
 
 /* --- Input, Select, and Textarea Styling --- */
 .postform-form input[type="text"],
@@ -2261,7 +2260,7 @@ th {
 .donate-page{
   width:100%;
  
-  
+  margin-left: 20%;
   display: flex;
 
   justify-content: center;
@@ -2271,11 +2270,12 @@ th {
   width:80%; 
   display: flex;
   flex-direction: column;
+  align-items: center;
   
    
 }
 .postform-form{
-  width:80%;
+  width:100%;
   
   display: flex;
   flex-direction: column;

@@ -180,11 +180,11 @@ function Card() {
     return (
       <div className="no-posts">
         <div className="text-center">
-          <p className="text-xl text-gray-600 mb-4">
+          <p className="no-post-created">
             You haven't created any posts yet
           </p>
           <Link href="/donatePage" className="make-first-donation">
-            Create Your First Post
+            Click Here to Create Your First Post
           </Link>
         </div>
       </div>
