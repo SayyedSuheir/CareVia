@@ -8,20 +8,13 @@ import Filter from './Filter'
 
 function Homepage() {
   return (
-    <div>
+    <div className='homepage-component'>
      
-          {/* <header>
-            <Navbar/>
-          </header> */}
-          <main 
-          style={{ display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center"}}
-                      >
-            <Filter/>
-            <Card/>
-          </main>
+             
+                               
+     <Filter/>
+      <Card/>
+         
         
     </div>
   )

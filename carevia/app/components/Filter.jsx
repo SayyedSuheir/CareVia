@@ -118,12 +118,12 @@ export default function Filters() {
         </div>
 
         {/* Clear filter button */}
-        <div className="">
+        <div className="rest-btn ">
       <button
         onClick={clearFilters}
-        className="btn-primary clearbtn"
+        className="btn-primary clearbtn btn"
         >
-        Clear 
+        Reset Filter
       </button>
         </div>
       </div>
