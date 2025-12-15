@@ -71,22 +71,50 @@ function AdminDashboard() {
   //   }
   // };
 
-const fetchDonations = async () => {
-  setLoading(true);
-  try {
-    const res = await fetch('/api/admin/donations?page=1&limit=50', { credentials: 'include' });
-    const data = await res.json();
-    if (data.success) setDonations(data.donations);
-    else toast.error('Failed to fetch donations');
-  } catch (err) {
-    console.error('Donations fetch error:', err);
-    toast.error('Network error while fetching donations');
-  } finally {
-    setLoading(false);
-  }
-};
+// const fetchDonations = async () => {
+//   setLoading(true);
+//   try {
+//     const res = await fetch('/api/admin/donations?page=1&limit=50', { credentials: 'include' });
+//     const data = await res.json();
+//     if (data.success) setDonations(data.donations);
+//     else toast.error('Failed to fetch donations');
+//   } catch (err) {
+//     console.error('Donations fetch error:', err);
+//     toast.error('Network error while fetching donations');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 // ////////////////////////
+// const handleUpdateStatus = async (donationId, newStatus) => {
+//   try {
+//     const res = await fetch(`/api/admin/donations/${donationId}/status`, {
+//       method: 'PATCH',
+//       credentials: 'include',
+//       headers: { 'Content-Type': 'application/json' },
+//       body: JSON.stringify({ status: newStatus })
+//     });
+//     const data = await res.json();
+//     if (data.success) {
+//       toast.success(`Donation ${newStatus}`);
+//       // Update local state
+//       setDonations(donations.map(d => d._id === donationId ? { ...d, status: newStatus } : d));
+//     } else {
+//       toast.error(data.error || 'Failed to update status');
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     toast.error('Network error');
+//   }
+// };
+
+// Fixed handleUpdateStatus function with better error handling
+
 const handleUpdateStatus = async (donationId, newStatus) => {
+  console.log(`🔄 Updating donation ${donationId} to ${newStatus}`);
+  
+  const loadingToast = toast.loading(`Updating status to ${newStatus}...`);
+  
   try {
     const res = await fetch(`/api/admin/donations/${donationId}/status`, {
       method: 'PATCH',
@@ -94,20 +122,66 @@ const handleUpdateStatus = async (donationId, newStatus) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
     });
+    
+    console.log('📡 Response status:', res.status);
+    
     const data = await res.json();
+    console.log('📡 Response data:', data);
+    
     if (data.success) {
-      toast.success(`Donation ${newStatus}`);
+      toast.success(`Donation ${newStatus} successfully!`, { id: loadingToast });
+      
       // Update local state
-      setDonations(donations.map(d => d._id === donationId ? { ...d, status: newStatus } : d));
+      setDonations(prevDonations => 
+        prevDonations.map(d => 
+          d._id === donationId ? { ...d, status: newStatus } : d
+        )
+      );
+      
+      // Optionally refresh the list
+      // await fetchDonations();
     } else {
-      toast.error(data.error || 'Failed to update status');
+      toast.error(data.error || 'Failed to update status', { id: loadingToast });
     }
   } catch (err) {
-    console.error(err);
-    toast.error('Network error');
+    console.error('❌ Update status error:', err);
+    toast.error('Network error while updating status', { id: loadingToast });
   }
 };
 
+// Fixed fetchDonations with better error handling
+const fetchDonations = async () => {
+  console.log('🔄 Fetching donations...');
+  setLoading(true);
+  
+  try {
+    const res = await fetch('/api/admin/donations?page=1&limit=50', { 
+      credentials: 'include' 
+    });
+    
+    console.log('📡 Donations response status:', res.status);
+    
+    const data = await res.json();
+    console.log('📡 Donations data:', data);
+    
+    if (data.success) {
+      setDonations(data.donations || []);
+      
+      if (data.statusCounts) {
+        console.log('📊 Status counts:', data.statusCounts);
+      }
+      
+      toast.success(`Loaded ${data.donations?.length || 0} donations`);
+    } else {
+      toast.error(data.error || 'Failed to fetch donations');
+    }
+  } catch (err) {
+    console.error('❌ Donations fetch error:', err);
+    toast.error('Network error while fetching donations');
+  } finally {
+    setLoading(false);
+  }
+};
 
 
 // ////////////////////////
@@ -280,7 +354,7 @@ const handleUpdateStatus = async (donationId, newStatus) => {
       )}
 
       {/* Donations */}
-      {activeTab==='donations' && (
+      {/* {activeTab==='donations' && (
         <section className="donations-tab">
           <h2>Donations Management</h2>
           <table>
@@ -327,7 +401,147 @@ const handleUpdateStatus = async (donationId, newStatus) => {
       </tbody>
     </table>
   </section>
-)}
+)} */}
+
+    {activeTab === 'donations' && (
+      <section className="donations-tab">
+        <h2>Donations Management</h2>
+        
+        {/* Status counts summary */}
+        {donations.length > 0 && (
+          <div style={{ marginBottom: '20px', display: 'flex', gap: '15px' }}>
+            <span style={{ padding: '8px 15px', background: '#FFA500', color: 'white', borderRadius: '5px' }}>
+              Pending: {donations.filter(d => d.status === 'pending').length}
+            </span>
+            <span style={{ padding: '8px 15px', background: '#2BB0A8', color: 'white', borderRadius: '5px' }}>
+              Approved: {donations.filter(d => d.status === 'approved').length}
+            </span>
+            <span style={{ padding: '8px 15px', background: '#dc3545', color: 'white', borderRadius: '5px' }}>
+              Rejected: {donations.filter(d => d.status === 'rejected').length}
+            </span>
+          </div>
+        )}
+        
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: '#2BB0A8', color: 'white' }}>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Item</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Type</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Donor</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Date</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Status</th>
+              <th style={{ padding: '10px', border: '1px solid #ddd' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                  Loading donations...
+                </td>
+              </tr>
+            ) : donations.length > 0 ? (
+              donations.map(d => (
+                <tr key={d._id}>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{d.name}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>{d.Type}</td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {d.userId?.name || 'Unknown'}
+                    <br />
+                    <small style={{ color: '#666' }}>{d.userId?.email || 'N/A'}</small>
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {formatDate(d.createdAt)}
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    <span style={{
+                      padding: '5px 10px',
+                      borderRadius: '4px',
+                      background: 
+                        d.status === 'pending' ? '#FFA500' :
+                        d.status === 'approved' ? '#2BB0A8' :
+                        d.status === 'rejected' ? '#dc3545' : '#gray',
+                      color: 'white',
+                      fontSize: '12px',
+                      fontWeight: 'bold'
+                    }}>
+                      {d.status || 'approved'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '10px', border: '1px solid #ddd' }}>
+                    {d.status === 'pending' ? (
+                      <>
+                        <button 
+                          onClick={() => handleUpdateStatus(d._id, 'approved')}
+                          style={{
+                            marginRight: '5px',
+                            padding: '5px 10px',
+                            background: '#2BB0A8',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ✓ Approve
+                        </button>
+                        <button 
+                          onClick={() => handleUpdateStatus(d._id, 'rejected')}
+                          style={{
+                            padding: '5px 10px',
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          ✗ Reject
+                        </button>
+                      </>
+                    ) : d.status === 'approved' ? (
+                      <button 
+                        onClick={() => handleUpdateStatus(d._id, 'rejected')}
+                        style={{
+                          padding: '5px 10px',
+                          background: '#dc3545',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ✗ Reject
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={() => handleUpdateStatus(d._id, 'approved')}
+                        style={{
+                          padding: '5px 10px',
+                          background: '#2BB0A8',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        ✓ Re-approve
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                  No donations found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </section>
+    )}
 
       
 

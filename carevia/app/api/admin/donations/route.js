@@ -1,139 +1,123 @@
-// ==========================================
-// API: /api/admin/donations - Donations Management
-// ==========================================
+// File: app/api/admin/donations/route.js
 
-import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import connectDB from "@/app/_lib/mongodb";
-import Goods from "@/app/_models/Goods";
+import Goods from '@/app/_models/Goods';
+import connectDB from '@/app/_lib/mongodb';
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
-// Helper function to check if user is admin
+// Helper to check if user is admin
 function isAdmin(email) {
-  return email && email.endsWith('@carevia.com');
+  return email && email.endsWith("@carevia.com");
 }
 
-// ================= GET =================
 export async function GET(request) {
   try {
-    // Verify admin authentication
-    const token = request.cookies.get("sessionToken")?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!isAdmin(decoded.email)) return NextResponse.json({ error: "Access denied. Admin only." }, { status: 403 });
+    console.log("🔵 Admin: Fetching all donations");
 
     await connectDB();
 
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page")) || 1;
-    const limit = parseInt(searchParams.get("limit")) || 10;
-    const type = searchParams.get("type") || "";
-    const search = searchParams.get("search") || "";
-    const skip = (page - 1) * limit;
-
-    let query = {};
-    if (type) query.Type = type;
-    if (search) {
-      query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-      ];
+    // Get user from session token
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sessionToken")?.value;
+    
+    if (!token) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
     }
 
-    const donations = await Goods.find(query)
-      .populate("userId", "name email phoneNumber")
-      .sort({ 
-        status: 1,       // pending first
-        createdAt: -1
-      })
-      .skip(skip)
-      .limit(limit);
-
-    const totalDonations = await Goods.countDocuments(query);
-
-    return NextResponse.json({
-      success: true,
-      donations,
-      pagination: {
-        page,
-        limit,
-        total: totalDonations,
-        pages: Math.ceil(totalDonations / limit)
-      }
-    });
-
-  } catch (error) {
-    console.error("Donations API error:", error);
-    return NextResponse.json({ error: "Failed to fetch donations" }, { status: 500 });
-  }
-}
-
-// ================= DELETE =================
-export async function DELETE(request) {
-  try {
-    const token = request.cookies.get("sessionToken")?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!isAdmin(decoded.email)) return NextResponse.json({ error: "Access denied. Admin only." }, { status: 403 });
-
-    await connectDB();
-
-    const { searchParams } = new URL(request.url);
-    const donationId = searchParams.get("id");
-    if (!donationId) return NextResponse.json({ error: "Donation ID required" }, { status: 400 });
-
-    const deletedDonation = await Goods.findByIdAndDelete(donationId);
-    if (!deletedDonation) return NextResponse.json({ error: "Donation not found" }, { status: 404 });
-
-    return NextResponse.json({
-      success: true,
-      message: "Donation deleted successfully"
-    });
-
-  } catch (error) {
-    console.error("Delete donation error:", error);
-    return NextResponse.json({ error: "Failed to delete donation" }, { status: 500 });
-  }
-}
-
-// ================= PATCH (Update Status) =================
-export async function PATCH(request) {
-  try {
-    const token = request.cookies.get("sessionToken")?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    if (!isAdmin(decoded.email)) return NextResponse.json({ error: "Access denied. Admin only." }, { status: 403 });
-
-    await connectDB();
-
-    const { searchParams } = new URL(request.url);
-    const donationId = searchParams.get("id");
-    if (!donationId) return NextResponse.json({ error: "Donation ID required" }, { status: 400 });
-
-    const body = await request.json();
-    const { status } = body;
-    if (!["pending", "approved", "rejected"].includes(status)) {
-      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return NextResponse.json(
+        { success: false, error: "Invalid or expired session" },
+        { status: 401 }
+      );
     }
 
-    const updatedDonation = await Goods.findByIdAndUpdate(
-      donationId,
-      { status },
-      { new: true }
+    // Check if user is admin
+    if (!isAdmin(decoded.email)) {
+      return NextResponse.json(
+        { success: false, error: "Access denied. Admin only." },
+        { status: 403 }
+      );
+    }
+
+    // Get optional status filter and pagination
+    const url = new URL(request.url);
+    const statusFilter = url.searchParams.get('status'); // pending, approved, rejected
+    const page = parseInt(url.searchParams.get('page')) || 1;
+    const limit = parseInt(url.searchParams.get('limit')) || 50;
+
+    // Build query - NO status filter by default (show ALL)
+    const query = {};
+    
+    if (statusFilter && ['pending', 'approved', 'rejected'].includes(statusFilter)) {
+      query.status = statusFilter;
+    }
+
+    console.log("🔍 Admin query:", query);
+
+    // Fetch donations with user details populated
+    const posts = await Goods.find(query)
+      .populate('userId', 'name email') // Populate user info
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
+
+    console.log(`✅ Found ${posts.length} total donations`);
+
+    // Count by status
+    const statusCounts = await Promise.all([
+      Goods.countDocuments({ status: 'pending' }),
+      Goods.countDocuments({ status: 'approved' }),
+      Goods.countDocuments({ status: 'rejected' }),
+    ]);
+
+    const formattedPosts = posts.map((post) => ({
+      _id: post._id.toString(),
+      userId: {
+        _id: post.userId?._id?.toString(),
+        name: post.userId?.name || 'Unknown',
+        email: post.userId?.email || 'N/A'
+      },
+      name: post.name,
+      image: post.image,
+      description: post.description,
+      Type: post.Type,
+      address: post.address,
+      city: post.city,
+      area: post.area,
+      village: post.village,
+      status: post.status || 'approved', // Default to approved if missing
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    }));
+
+    return NextResponse.json(
+      { 
+        success: true, 
+        donations: formattedPosts, // Changed from 'posts' to 'donations'
+        count: formattedPosts.length,
+        statusCounts: {
+          pending: statusCounts[0],
+          approved: statusCounts[1],
+          rejected: statusCounts[2]
+        }
+      },
+      { status: 200 }
     );
 
-    if (!updatedDonation) return NextResponse.json({ error: "Donation not found" }, { status: 404 });
+  } catch (err) {
+    console.error("❌ Admin fetch donations error:", err);
+    console.error("Stack:", err.stack);
 
-    return NextResponse.json({
-      success: true,
-      message: `Donation status updated to ${status}`,
-      donation: updatedDonation
-    });
-
-  } catch (error) {
-    console.error("Update donation status error:", error);
-    return NextResponse.json({ error: "Failed to update status" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: err.message || "Failed to fetch donations" },
+      { status: 500 }
+    );
   }
 }
