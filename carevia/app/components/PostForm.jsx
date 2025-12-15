@@ -185,31 +185,66 @@ const PostFormWithImage = () => {
 
   return (
     <div className="postform-container">
+      <div className="mobile-note">
+      
+      {/* <i className="pin"></i> */}
+      <blockquote className="note yellow">
+        Note: To keep CareVia safe and trustworthy, this form uses AI image detection. 
+          Any AI-generated images or images that violate our guidelines will not be published.
+        <cite className="author">CareVia</cite>
+      </blockquote>
+      </div>
+      
       <form onSubmit={handleSubmit} className="postform-form">
         {error && <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>}
         {success && <div className="bg-green-100 text-green-700 p-3 rounded">Post created successfully!</div>}
-
-        <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required />
-
-        <input type="file" accept="image/*" onChange={handleImageChange} required />
-        {checkingAI && <p>Checking image safety...</p>}
-        {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} />}
-
-        <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />
-        <input type="text" name="area" ref={areaRef} value={formData.area} onChange={handleChange} placeholder="Area" required />
-        <input type="text" name="city" ref={cityRef} value={formData.city} onChange={handleChange} placeholder="City" required />
-
-        <select name="Type" value={formData.Type} onChange={handleChange} required>
-          <option value="">Select Category</option>
-          {categories.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
-        </select>
-
-        <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" required />
-
-        <button type="submit" disabled={loading || checkingAI || !imageFile}>
-          {loading ? "Publishing..." : "Publish Post"}
-        </button>
+        <div className="postform-title">
+          <h2>Create a Kind Donation</h2>
+        </div>
+        <div className="postform-body">
+          <div className="postform-input">
+            <div className="postform-input-itemname">
+              <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required />
+            </div>
+            <div className="postform-input-image">
+              <input type="file" accept="image/*" onChange={handleImageChange} required />
+              {checkingAI && <p>Checking image safety...</p>}
+              {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} />}
+            </div>
+            <div className="postform-input-village">
+             <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />
+            </div>
+            <div className="postform-input-area">
+              <input type="text" name="area" ref={areaRef} value={formData.area} onChange={handleChange} placeholder="Area" required />
+            </div>
+            <div className="postform-input-city">
+             <input type="text" name="city" ref={cityRef} value={formData.city} onChange={handleChange} placeholder="City" required />
+            </div>
+          </div>
+          <div className="postform-select">
+            <select name="Type" value={formData.Type} onChange={handleChange} required>
+              <option value="">Select Category</option>
+              {categories.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+            </select>
+          </div>
+          <div className="postform-description">
+            <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" required />
+          </div>
+        </div>
+        <div className="postform-btn">
+          <button type="submit" disabled={loading || checkingAI || !imageFile}>
+            {loading ? "Publishing..." : "Publish Post"}
+          </button>
+        </div>
       </form>
+      <div className="quote-container">
+      {/* <i className="pin"></i> */}
+      <blockquote className="note yellow">
+        Note: To keep CareVia safe and trustworthy, this form uses AI image detection. 
+          Any AI-generated images or images that violate our guidelines will not be published.
+        <cite className="author">CareVia</cite>
+      </blockquote>
+      </div>
     </div>
   );
 };
