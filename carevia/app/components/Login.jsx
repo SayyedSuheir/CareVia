@@ -46,12 +46,12 @@ export default function Login() {
     <div className="login-form-container">
       <div className="head-login-form">
 
-        <div className="login-welcome text-center mb-10">
-          <h1 className="text-3xl font-extrabold text-text-primary mt-2">Welcome To CareVia</h1>
+        <div className="login-welcome ">
+          <h1 className="login-title">Welcome To CareVia</h1>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+          <div className="login-error">
             {error}
           </div>
         )}

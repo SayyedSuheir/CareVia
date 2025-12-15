@@ -314,15 +314,15 @@ display: flex;
 }
 /* login-form */
 .login-form-container{
-  width: 100%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap:5%;
-  width: 100%;
   
-  height: 100vh;
+  
+  
+  
 }
 .head-login-form{
   width:100%;
@@ -331,21 +331,25 @@ display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height:80%;
+  
+  
 }
 .login-welcome{
+  display: flex;
+  justify-content: center;
   width: 100%;
-  height: 10%;
+  margin-bottom: 5%;
   color:var(--color-primary);
  
 }
 .login-form{
   color:var(--color-primary);
-  width: 100%;
-  height: 60%;
+  width: 80%;
+  
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin-bottom: 5%;
 }
 
 .email-section, .password-section{
@@ -353,10 +357,13 @@ display: flex;
   display: flex;
   flex-direction: column;
   
+  
 
 }
 .login-footer{
-  height: 10%;
+  display: flex;
+  
+
   color:var(--color-primary);
 }
 .login-footer a{
@@ -368,10 +375,11 @@ font-weight: 700;
   width:100%;
   display: flex;
   justify-content: center;
+  margin-top: 5%;
 }
 .btn-signin{
-  width:90% !important;
-  height: 10vh;
+  width:100% !important;
+  padding: 5%;
 }
 /* regpage css */
 .reg-container{
@@ -1718,7 +1726,8 @@ th {
   display: none;
 }
 /* reg-page css */
-.register-page{
+.register-page,
+.login-page{
   display: flex;
   width:100%;
 }
