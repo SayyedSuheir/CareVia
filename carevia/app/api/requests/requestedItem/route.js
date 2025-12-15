@@ -244,17 +244,20 @@ export async function GET(request) {
       .sort({ requestedAt: -1 })
       .lean();
 
-    const formattedItems = requestedItems.map((item) => ({
-      id: item.goodsId._id.toString(),
-      name: item.goodsId.name,
-      description: item.goodsId.description,
-      image: item.goodsId.image,
-      type: item.goodsId.Type,
-      address: item.goodsId.address,
-      requestedAt: item.requestedAt,
-      expiresAt: item.expiresAt,
-      status: item.status,
-    }));
+    const formattedItems = requestedItems
+  .filter(item => item.goodsId) // 🔥 prevents null crash
+  .map(item => ({
+    id: item.goodsId?._id?.toString() ?? null,
+  name: item.goodsId?.name ?? "Item no longer available",
+  description: item.goodsId?.description ?? "",
+  image: item.goodsId?.image ?? "",
+  type: item.goodsId?.Type ?? "",
+  address: item.goodsId?.address ?? "",
+  requestedAt: item.requestedAt,
+  expiresAt: item.expiresAt,
+  status: item.status,
+  }));
+
 
     return NextResponse.json({
       success: true,

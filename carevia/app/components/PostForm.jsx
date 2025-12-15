@@ -213,7 +213,7 @@ if (!data.success) {
             <div className="postform-input-image">
               <input type="file" accept="image/*" onChange={handleImageChange} required />
               {checkingAI && <p>Checking image safety...</p>}
-              {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} />}
+              {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={300} className="imgpre" />}
             </div>
             <div className="postform-input-village">
              <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />
