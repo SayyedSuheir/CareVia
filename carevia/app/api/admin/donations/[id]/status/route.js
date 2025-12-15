@@ -1,4 +1,81 @@
 // File: app/api/admin/donations/[id]/status/route.js
+// ==========================================
+// API: /api/admin/donations/[id]/status - Update Donation Status
+// ==========================================
+// File: app/api/admin/donations/[id]/status/route.js
+
+/**
+ * @swagger
+ * tags:
+ *   name: AdminDonations
+ *   description: Admin donation management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/admin/donations/{id}/status:
+ *   patch:
+ *     summary: Update donation status
+ *     description: >
+ *       Updates the status of a specific donation.
+ *       Accessible only to admin users (emails ending with @carevia.com).
+ *     tags: [AdminDonations]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Donation ID to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, approved, rejected]
+ *                 description: New status for the donation
+ *     responses:
+ *       200:
+ *         description: Donation status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Donation status updated to approved
+ *                 donation:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 63f1a2e5c5f8b1234567890a
+ *                     status:
+ *                       type: string
+ *                       example: approved
+ *                     name:
+ *                       type: string
+ *                       example: Winter Clothes Donation
+ *       400:
+ *         description: Invalid request (missing donation ID or invalid status)
+ *       401:
+ *         description: Unauthorized – missing or invalid token
+ *       403:
+ *         description: Forbidden – admin access required
+ *       404:
+ *         description: Donation not found
+ *       500:
+ *         description: Server error while updating donation
+ */
+
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";

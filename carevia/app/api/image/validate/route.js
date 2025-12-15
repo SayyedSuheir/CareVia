@@ -1,3 +1,100 @@
+// ==========================================
+// API: /api/test/sightengine - Test Sightengine Image Moderation
+// ==========================================
+// File: app/api/test/sightengine/route.js
+
+/**
+ * @swagger
+ * tags:
+ *   name: SightengineTest
+ *   description: Test image moderation using Sightengine API
+ */
+
+/**
+ * @swagger
+ * /api/test/sightengine:
+ *   post:
+ *     summary: Test image with Sightengine API
+ *     description: >
+ *       Accepts an image file and analyzes it using Sightengine for nudity,
+ *       weapons, offensive content, and AI-generated content. Returns a
+ *       moderation result and an AI content score.
+ *     tags: [SightengineTest]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to analyze
+ *     responses:
+ *       200:
+ *         description: Image analyzed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 result:
+ *                   type: object
+ *                   description: Full response from Sightengine
+ *                 aiScore:
+ *                   type: number
+ *                   description: Probability that image is AI-generated
+ *                   example: 0.85
+ *                 wouldBlock:
+ *                   type: boolean
+ *                   description: Whether the image should be blocked based on AI score
+ *                   example: true
+ *                 credentialsOk:
+ *                   type: boolean
+ *                   description: Whether Sightengine credentials are configured
+ *                   example: true
+ *       400:
+ *         description: No image provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: No image provided
+ *       500:
+ *         description: Server error or missing Sightengine credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                 stack:
+ *                   type: string
+ *                   description: Error stack trace
+ *                 hasUser:
+ *                   type: boolean
+ *                   description: Whether API user is configured
+ *                   example: true
+ *                 hasSecret:
+ *                   type: boolean
+ *                   description: Whether API secret is configured
+ *                   example: true
+ */
+
 import { NextResponse } from "next/server";
 import sightengine from 'sightengine';
 

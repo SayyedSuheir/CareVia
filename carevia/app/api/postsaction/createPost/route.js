@@ -1,3 +1,121 @@
+// ==========================================
+// API: /api/postsaction/createPost - Create a Public Post
+// ==========================================
+// File: app/api/postsaction/createPost/route.js
+
+/**
+ * @swagger
+ * tags:
+ *   name: Posts
+ *   description: Public posts management
+ */
+
+/**
+ * @swagger
+ * /api/postsaction/createPost:
+ *   post:
+ *     summary: Create a new public post
+ *     description: >
+ *       Allows a logged-in user to create a public post with name, description,
+ *       type, address, and an image. Uses AI validation to check the image.
+ *       Certain keywords may automatically set the post status to "pending" for review.
+ *     tags: [Posts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the post
+ *                 example: Winter Clothes Donation
+ *               description:
+ *                 type: string
+ *                 description: Detailed description of the post
+ *                 example: Gently used winter clothes for families in need
+ *               Type:
+ *                 type: string
+ *                 enum: [food, clothes, electronics, furniture, other]
+ *                 description: Category of the post
+ *                 example: clothes
+ *               address:
+ *                 type: string
+ *                 description: Street or exact address
+ *                 example: 123 Main Street
+ *               area:
+ *                 type: string
+ *                 description: Area of the city
+ *                 example: Downtown
+ *               city:
+ *                 type: string
+ *                 description: City name
+ *                 example: Tyre
+ *               village:
+ *                 type: string
+ *                 description: Village or neighborhood
+ *                 example: Old Town
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file of the post
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Post created successfully
+ *                 post:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     userId:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     Type:
+ *                       type: string
+ *                     address:
+ *                       type: string
+ *                     city:
+ *                       type: string
+ *                     area:
+ *                       type: string
+ *                     village:
+ *                       type: string
+ *                     image:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                       enum: [pending, approved]
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
+ *       400:
+ *         description: Validation failed or missing required fields
+ *       401:
+ *         description: Authentication required or invalid session
+ *       409:
+ *         description: Duplicate post
+ *       500:
+ *         description: Server error
+ */
+
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import path from "path";

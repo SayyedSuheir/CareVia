@@ -1,3 +1,8 @@
+// ==========================================
+// API: /api/postsaction/all - Fetch Public Posts
+// ==========================================
+// File: app/api/postsaction/all/route.js
+
 /**
  * @swagger
  * tags:
@@ -10,27 +15,29 @@
  * /api/postsaction/all:
  *   get:
  *     summary: Fetch all public posts
- *     description: Retrieves all public posts with optional filters for city and type. Excludes posts requested by the current user.
+ *     description: >
+ *       Retrieves all public posts with optional filters for city and type.
+ *       Excludes posts requested by the current user.
  *     tags: [Posts]
  *     parameters:
- *       - name: city
- *         in: query
+ *       - in: query
+ *         name: city
  *         required: false
+ *         schema:
+ *           type: string
  *         description: Filter posts by city
+ *       - in: query
+ *         name: type
+ *         required: false
  *         schema:
  *           type: string
- *       - name: type
- *         in: query
- *         required: false
  *         description: Filter posts by type
- *         schema:
- *           type: string
- *       - name: sessionToken
- *         in: cookie
+ *       - in: cookie
+ *         name: sessionToken
  *         required: false
- *         description: Optional JWT session token for identifying user
  *         schema:
  *           type: string
+ *         description: Optional JWT session token for identifying user
  *     responses:
  *       200:
  *         description: List of posts retrieved successfully
@@ -90,6 +97,7 @@
  *                   type: string
  *                   example: Failed to fetch posts
  */
+
 
 import Goods from '@/app/_models/Goods';
 import connectDB from '@/app/_lib/mongodb';
