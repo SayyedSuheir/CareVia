@@ -60,6 +60,11 @@ const goodsSchema = new mongoose.Schema(
       type:Boolean,
       required:false,
       default:false
+    },
+     status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'approved' // old posts stay visible
     }
   },
   { timestamps: true }

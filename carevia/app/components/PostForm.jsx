@@ -91,14 +91,16 @@ const PostFormWithImage = () => {
       });
 
       const data = await res.json();
+     console.log("🔍 Validation response:", data);
 
-      if (!data.success) {
-        setError("AI validation failed. Try another image.");
-        setImageFile(null);
-        setImagePreview(null);
-        setCheckingAI(false);
-        return;
-      }
+if (!data.success) {
+    toast.error(data.reason || "AI validation failed");
+    setError(data.reason || "AI validation failed");
+    setImageFile(null);
+    setImagePreview(null);
+    return;
+}
+
 
       // Check AI-generated probability
       const aiProb = data.result?.type?.ai_generated || 0;
@@ -114,6 +116,8 @@ const PostFormWithImage = () => {
       setImageFile(file);
       setImagePreview(URL.createObjectURL(file));
       setError("");
+      toast.success("Image validated successfully!");
+
     } catch (err) {
       console.error("AI validation error:", err);
       setError("Failed to validate image. Try again.");

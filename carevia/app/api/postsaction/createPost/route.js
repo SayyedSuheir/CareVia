@@ -1,301 +1,195 @@
-// /api/createpost
-/**
- * @swagger
- * tags:
- *   name: Posts
- *   description: Post creation and management
- */
-
-/**
- * @swagger
- * /api/createpost:
- *   post:
- *     summary: Create a new post
- *     description: Creates a new post for a logged-in user, including image upload with AI validation.
- *     tags: [Posts]
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Name of the item (min 2 characters)
- *               description:
- *                 type: string
- *                 description: Description of the item (min 10 characters)
- *               Type:
- *                 type: string
- *                 description: Type of item (food, clothes, electronics, furniture, other)
- *               address:
- *                 type: string
- *                 description: Detailed address (min 5 characters)
- *               city:
- *                 type: string
- *                 description: City name
- *               area:
- *                 type: string
- *                 description: Area name
- *               village:
- *                 type: string
- *                 description: Village name
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Image file (JPG, PNG, GIF, WebP, max 5MB)
- *     responses:
- *       201:
- *         description: Post created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Post created successfully
- *                 post:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: string
- *                     userId:
- *                       type: string
- *                     name:
- *                       type: string
- *                     image:
- *                       type: string
- *                     description:
- *                       type: string
- *                     Type:
- *                       type: string
- *                     address:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
- *       400:
- *         description: Validation error or missing required fields
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *       401:
- *         description: Unauthorized (invalid or missing session)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *       409:
- *         description: Duplicate post exists
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: false
- *                 error:
- *                   type: string
- */
-
-import Goods from '@/app/_models/Goods';
-import connectDB from '@/app/_lib/mongodb';
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import path from "path";
+import { writeFile } from "fs/promises";
+import connectDB from "@/app/_lib/mongodb";
+import Goods from "@/app/_models/Goods";
 import { validateImage } from "@/app/_lib/validateImage";
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 
-export async function POST(request) {
+function shouldBePending(name, description) {
+  const pendingKeywords = [
+    "villa",
+    "mansion", 
+    "apartment",
+    "expensive",
+    "luxury",
+    "penthouse",
+    "estate",
+    "mercedes",
+    "bmw",
+    "rolex",
+    "gucci",
+    "louis vuitton",
+    "designer",
+    "car",
+    "vehicle",
+    "jewelry",
+    "gold",
+    "diamond"
+  ];
+
+  // Words that should NOT trigger pending (whitelist)
+  const whitelistWords = [
+    "village",
+    "homework",
+    "homeless",
+    "apartment building toy",
+  ];
+
+  const combinedText = `${name || ""} ${description || ""}`.toLowerCase().trim();
+
+  // First check whitelist - if any whitelist word is found, don't flag
+  for (const whiteWord of whitelistWords) {
+    if (combinedText.includes(whiteWord)) {
+      console.log(`✅ Whitelisted: Contains "${whiteWord}"`);
+      return false; // Don't flag as pending
+    }
+  }
+
+  // Check for pending keywords
+  for (const keyword of pendingKeywords) {
+    // Use word boundaries to avoid false positives
+    const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+    
+    if (regex.test(combinedText)) {
+      console.log(`⚠️ Flagged for review: Found keyword "${keyword}"`);
+      return true;
+    }
+  }
+
+  return false; // Approved by default
+}
+
+export async function POST(req) {
   try {
-    console.log('🔵 Create post started');
-
-    // Connect to MongoDB
     await connectDB();
-    console.log('✅ MongoDB connected');
 
-    // Get and verify user from session token
-    const cookieStore = await cookies();
-    const token = cookieStore.get("sessionToken")?.value;
-
-    if (!token) {
+    // ✅ Authenticate User
+    const token = req.cookies.get("sessionToken")?.value; // correct usage in route handlers
+    if (!token)
       return NextResponse.json(
-        { success: false, error: "Authentication required. Please login." },
+        { success: false, error: "Authentication required" },
         { status: 401 }
       );
-    }
 
     const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error("❌ JWT_SECRET not configured");
-      return NextResponse.json(
-        { success: false, error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
+    if (!jwtSecret) throw new Error("JWT_SECRET not configured");
 
-    // Verify token and get userId
     let userId;
     try {
-      const decoded = jwt.verify(token, jwtSecret);
-      userId = decoded.userId;
-      console.log('✅ User authenticated:', userId);
-    } catch (err) {
-      console.error("❌ Invalid token:", err);
+      userId = jwt.verify(token, jwtSecret).userId;
+    } catch {
       return NextResponse.json(
-        { success: false, error: "Invalid or expired session. Please login again." },
+        { success: false, error: "Invalid or expired session" },
         { status: 401 }
       );
     }
 
-    // Parse FormData
-    const formData = await request.formData();
-    const name = formData.get('name')?.trim();
-    const description = formData.get('description')?.trim();
-    const Type = formData.get('Type')?.trim();
-    const address = formData.get('address')?.trim();
-    const imageFile = formData.get('image');
-    const city = formData.get('city')?.trim();
-    const area = formData.get('area')?.trim();
-    const village = formData.get('village')?.trim();
+    // ✅ Parse FormData
+    const formData = await req.formData();
+    const name = formData.get("name")?.trim();
+    const description = formData.get("description")?.trim();
+    const Type = formData.get("Type")?.trim();
+    const address = formData.get("address")?.trim();
+    const area = formData.get("area")?.trim();
+    const city = formData.get("city")?.trim();
+    const village = formData.get("village")?.trim();
+    const imageFile = formData.get("image");
 
-    console.log('✅ FormData parsed');
+    if (!imageFile)
+      return NextResponse.json(
+        { success: false, error: "Image is required" },
+        { status: 400 }
+      );
 
-    // -------------------------
-    // 1️⃣ AI Image Validation
-    // -------------------------
-    if (!imageFile) {
-      return NextResponse.json({ success: false, error: "Image is required" }, { status: 400 });
-    }
-
+    // ✅ Validate Image via AI
     const validation = await validateImage(imageFile);
-    console.log("🔹 AI validation result:", validation);
+    if (!validation.valid)
+      return NextResponse.json(
+        { success: false, error: validation.reason },
+        { status: 400 }
+      );
 
-    if (!validation.valid) {
-      return NextResponse.json({ success: false, error: validation.reason }, { status: 400 });
-    }
+    // ✅ Validate Fields
+    if (!name || name.length < 2)
+      return NextResponse.json(
+        { success: false, error: "Name must be at least 2 characters" },
+        { status: 400 }
+      );
 
-    // -------------------------
-    // 2️⃣ Field Validation
-    // -------------------------
-    if (!name || name.length < 2) {
-      return NextResponse.json({ success: false, error: "Name must be at least 2 characters" }, { status: 400 });
-    }
-    if (!city || !area || !village) {
-      return NextResponse.json({ success: false, error: "City, area, and village are required" }, { status: 400 });
-    }
-    if (!description || description.length < 10) {
-      return NextResponse.json({ success: false, error: "Description must be at least 10 characters" }, { status: 400 });
-    }
-    if (!Type || !['food', 'clothes', 'electronics', 'furniture', 'other'].includes(Type.toLowerCase())) {
-      return NextResponse.json({ success: false, error: "Valid Type is required (food, clothes, electronics, furniture, other)" }, { status: 400 });
-    }
-    if (!address || address.length < 5) {
-      return NextResponse.json({ success: false, error: "Valid address is required (minimum 5 characters)" }, { status: 400 });
-    }
+    if (!description || description.length < 10)
+      return NextResponse.json(
+        { success: false, error: "Description must be at least 10 characters" },
+        { status: 400 }
+      );
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedTypes.includes(imageFile.type)) {
-      return NextResponse.json({ success: false, error: "Invalid image type. Only JPG, PNG, GIF, and WebP are allowed" }, { status: 400 });
-    }
+    if (!Type || !["food", "clothes", "electronics", "furniture", "other"].includes(Type.toLowerCase()))
+      return NextResponse.json(
+        { success: false, error: "Invalid Type" },
+        { status: 400 }
+      );
 
-    // Validate file size (max 5MB)
-    const maxSize = 5 * 1024 * 1024;
-    if (imageFile.size > maxSize) {
-      return NextResponse.json({ success: false, error: "Image size must be less than 5MB" }, { status: 400 });
-    }
+    if (!city || !area || !village || !address)
+      return NextResponse.json(
+        { success: false, error: "Address is required" },
+        { status: 400 }
+      );
 
-    console.log('✅ Validation passed');
-
-    // -------------------------
-    // 3️⃣ Save image
-    // -------------------------
+    // ✅ Save Image
     const buffer = Buffer.from(await imageFile.arrayBuffer());
     const timestamp = Date.now();
-    const originalName = imageFile.name.replace(/\s+/g, '-');
-    const filename = `${timestamp}-${originalName}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+    const safeName = imageFile.name.replace(/\s+/g, "-");
+    const filename = `${timestamp}-${safeName}`;
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
     const filepath = path.join(uploadDir, filename);
-
     await writeFile(filepath, buffer);
-    console.log('✅ Image saved:', filename);
-
     const imageUrl = `/uploads/${filename}`;
+ // ✅ Determine Status using helper function
+    const status = shouldBePending(name, description) ? "pending" : "approved";
 
-    // -------------------------
-    // 4️⃣ Create post
-    // -------------------------
+    console.log(`📋 Post status: ${status} | Name: "${name}"`);
+
+    // ✅ Create Post
     const newPost = await Goods.create({
       userId,
       name: name.toLowerCase(),
-      image: imageUrl,
       description,
       Type,
       address: `${area}, ${city}, ${village}`,
       city,
       area,
-      village
+      village,
+      image: imageUrl,
+      status
     });
 
-    console.log('✅ Post created:', newPost._id);
-
-    return NextResponse.json({
-      success: true,
-      message: "Post created successfully",
-      post: {
-        id: newPost._id,
-        userId: newPost.userId,
-        name: newPost.name,
-        image: newPost.image,
-        description: newPost.description,
-        Type: newPost.Type,
-        address: newPost.address,
-        createdAt: newPost.createdAt,
-        updatedAt: newPost.updatedAt
-      }
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Post created successfully",
+        post: {
+          id: newPost._id,
+          userId: newPost.userId,
+          name: newPost.name,
+          description: newPost.description,
+          Type: newPost.Type,
+          address: newPost.address,
+          image: newPost.image,
+          status: newPost.status,
+          createdAt: newPost.createdAt,
+          updatedAt: newPost.updatedAt
+        }
+      },
+      { status: 201 }
+    );
 
   } catch (err) {
-    console.error("❌ Create post error:", err);
-    if (err.code === 11000) {
-      return NextResponse.json({ success: false, error: "A post with this information already exists" }, { status: 409 });
-    }
-    return NextResponse.json({ success: false, error: err.message || "Failed to create post. Please try again." }, { status: 500 });
+    console.error("❌ /api/postsaction/createPost error:", err);
+    if (err.code === 11000)
+      return NextResponse.json({ success: false, error: "Duplicate post" }, { status: 409 });
+    return NextResponse.json(
+      { success: false, error: err.message || "Server error" },
+      { status: 500 }
+    );
   }
 }
