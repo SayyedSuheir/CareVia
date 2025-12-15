@@ -6,7 +6,7 @@ import Login from "../components/Login";
 
 function LoginPage() {
   return (
-    <div>
+    <div className="login-page">
         <Login/>
     </div>
   )

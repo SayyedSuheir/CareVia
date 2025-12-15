@@ -7,11 +7,11 @@ import PostForm from '@/app/components/PostForm';
 
 function page() {
   return (
-    <div>
+    <div className='donate-page'>
         
-        <main>
+        
           <PostForm />
-        </main>
+        
     </div>
   )
 }

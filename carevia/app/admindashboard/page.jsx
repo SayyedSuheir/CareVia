@@ -5,7 +5,7 @@ import BootstrapClient from "../components/BootstrapClient"
 
 function page() {
   return (
-    <div>
+    <div  className='admindashboard-container'>
       <BootstrapClient/>
         <AdminDashboard/>
 

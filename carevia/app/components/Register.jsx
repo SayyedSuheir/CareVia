@@ -196,7 +196,7 @@ function Register() {
   }, [showDropdown]);
 
   return (
-    <>
+    <div className="reg-component">
       {/* <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" /> */}
 
       <div className="reg-container">
@@ -391,7 +391,7 @@ function Register() {
           </div>
         </div>
       
-    </>
+    </div>
   );
 }
 

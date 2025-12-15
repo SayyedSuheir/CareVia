@@ -3,7 +3,7 @@ import Donation from "../components/Donation"
 
 function page() {
   return (
-    <div>
+    <div className="mydonation-page">
         <Donation/>
     </div>
   )

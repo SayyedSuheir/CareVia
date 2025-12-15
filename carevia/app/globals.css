@@ -37,6 +37,11 @@ body {
   align-items: center;
 }
 
+.dashboard-title,
+.donations-tab,
+.reports-tab h2, h4{
+  color: var(--color-primary);
+}
 
 .topNav{
   display: none;
@@ -1038,10 +1043,10 @@ h2 {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 20vh;
+ 
   margin-bottom: 10%;
 }
-.dashboard-title,
+
 .users-tab-title{
   height: 5vh;
 }
@@ -1712,7 +1717,27 @@ th {
 .side-navbar-container{
   display: none;
 }
+/* reg-page css */
+.register-page{
+  display: flex;
+  width:100%;
+}
+.sidecover-component{
+  width:50%;
+  background-color: red;
+}
+.sidecover-image{
+  width:100%;
+  
+}
+.sidecover-image img{
+  width:100%;
+  height:100vh;
+}
 
+.reg-component{
+  width:50%;
+}
 /* Mobile responsiveness */
 
 /* --- Media Queries for Mobile Responsiveness --- */
@@ -1745,7 +1770,24 @@ th {
 }
 @media screen and (min-width:1400px) {
  
-  
+  /* dashboard page css */
+  .admindashboard-container{
+    width:80%;
+    margin-left: 20%;
+  }
+  .dashboard{
+    width:100%;
+    height: 55vh;
+
+  }
+  .stats-cards{
+    width:100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  /* dashboard meter */
   
   .bottom-navbar-container{
     display: none;
@@ -1769,7 +1811,7 @@ th {
   left: 0;
   top: 0;
   height: 100vh;
-  width: 19%; /* fixed width instead of % for consistency */
+  width: 20%; /* fixed width instead of % for consistency */
   background: #ffffff;
   border-right: 1px solid #ffffff;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);

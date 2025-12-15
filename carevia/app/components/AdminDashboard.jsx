@@ -265,11 +265,11 @@ function AdminDashboard() {
             reports ? (
               <div>
                 <div style={{marginBottom:'2rem'}}>
-                  <h3>Donations by Type</h3>
+                  <h4>Donations by Type</h4>
                   {reports.donationsByType?.length>0 ? <ul>{reports.donationsByType.map(t => <li key={t._id}>{t._id}: {t.count} donations</li>)}</ul> : <p>No donation data available</p>}
                 </div>
                 <div style={{marginBottom:'2rem'}}>
-                  <h3>Top Donors</h3>
+                  <h4>Top Donors</h4>
                   {reports.topDonors?.length>0 ? <ul>{reports.topDonors.map(d => <li key={d._id}>{d.name} ({d.email}) - {d.donationCount} donations</li>)}</ul> : <p>No donor data available</p>}
                 </div>
               </div>

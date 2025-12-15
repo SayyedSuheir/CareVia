@@ -4,7 +4,7 @@ import EditPostPage from "@/app/components/EditPostPage";
 
 function page() {
   return (
-    <div>
+    <div className="edit-page">
         <EditPostPage />
     </div>
   )
