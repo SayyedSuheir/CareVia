@@ -139,7 +139,7 @@ export async function GET() {
     }
 
     // Fetch user's posts from database
-    const userPosts = await Goods.find({ userId })
+    const userPosts = await Goods.find({ userId ,status: "approved", })
       .sort({ createdAt: -1 }) // Most recent first
       .lean(); // Convert to plain JavaScript objects
 

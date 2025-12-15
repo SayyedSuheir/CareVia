@@ -131,6 +131,7 @@ export async function GET(request) {
     // Build filter query
     const query = {
       _id: { $nin: requestedIds },
+      status: "approved",
       ...(userId ? { userId: { $ne: userId } } : {}),
     };
 
