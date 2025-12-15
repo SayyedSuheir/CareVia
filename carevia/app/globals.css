@@ -573,14 +573,14 @@ font-weight: 700;
 /* create post form css */
 
 
-.donate-page{
+.donate-page,
+.mydonation-page,
+.edit-page,
+.needs-page{
   width:80%;
   height: 100vh;
   margin-left: 20%;
   display: flex;
-  
-
-
 }
 .postform-container{
   width:100%; 
@@ -1396,10 +1396,11 @@ th {
 
 /* Page Container (mimics flex items-center justify-center min-h-screen) */
 .page-container {
+    width:100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 5%;
+    
     padding: 1rem; /* p-4 */
 }
 
@@ -1827,6 +1828,26 @@ th {
 .mobile-note{
   display: none;
 }
+/* mydonation page style */
+.mydonation-component,
+.needs-component{
+  width:100%;
+  
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+ 
+}
+.posts-number{
+  color:var(--color-primary);
+  margin-top: 2%;
+  width: 100%;
+  border:1px solid gold;
+  display: flex;
+  justify-content: center;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
 /* Mobile responsiveness */
 
 /* --- Media Queries for Mobile Responsiveness --- */

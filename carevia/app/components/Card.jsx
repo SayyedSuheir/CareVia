@@ -198,9 +198,9 @@ function Card() {
       {pathname !== "/homepage" && (
         <h2 className="posts-number">
           {pathname === "/needs"
-            ? `My Needs (${posts.length})`
+            ? `My Needs: ${posts.length}`
             : !isHome
-            ? `My Posts (${posts.length})`
+            ? `Donations: ${posts.length}`
             : null}
         </h2>
       )}

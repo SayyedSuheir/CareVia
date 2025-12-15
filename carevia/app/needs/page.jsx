@@ -4,7 +4,7 @@ import MyNeeds from "../components/MyNeeds"
 
 function page() {
   return (
-    <div className="nedds-page">
+    <div className="needs-page">
       <MyNeeds />
     </div>
   )

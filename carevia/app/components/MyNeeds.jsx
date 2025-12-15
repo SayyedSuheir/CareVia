@@ -4,7 +4,7 @@ import Card from "./Card"
 
 function MyNeeds() {
   return (
-    <div className="needs-page">
+    <div className="needs-component">
         <Card/>
     </div>
   )
