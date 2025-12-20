@@ -12,9 +12,9 @@ import SideNavbar from "./components/SideNav";
 import { Toaster } from 'react-hot-toast';
 
 function NavbarWrapper() {
-  const { isLoggedIn } = useAuth()
+  // const { isLoggedIn } = useAuth()
 
-  if (!isLoggedIn) return null     // ✅ Hide navbar before login
+  // if (!isLoggedIn) return null     // ✅ Hide navbar before login
 
   return <SideNavbar />
 }
