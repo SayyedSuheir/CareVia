@@ -24,7 +24,7 @@
  *         name: includeExpired
  *         schema:
  *           type: boolean
- *         description: Include expired items in results (default: false)
+ *         description: Include expired items in results
  *     responses:
  *       200:
  *         description: List of requested items
@@ -42,19 +42,51 @@
  *                     all:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/RequestedItem'
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           requestedAt:
+ *                             type: string
+ *                             format: date-time
+ *                           expiresAt:
+ *                             type: string
+ *                             format: date-time
+ *                           status:
+ *                             type: string
+ *                             enum: [pending, picked_up, expired, cancelled]
+ *                           timeRemaining:
+ *                             type: integer
+ *                           isExpired:
+ *                             type: boolean
+ *                           goods:
+ *                             type: object
+ *                             nullable: true
+ *                             properties:
+ *                               id:
+ *                                 type: string
+ *                               name:
+ *                                 type: string
+ *                               description:
+ *                                 type: string
+ *                               image:
+ *                                 type: string
+ *                               type:
+ *                                 type: string
+ *                               address:
+ *                                 type: string
  *                     active:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/RequestedItem'
+ *                         type: object
  *                     expired:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/RequestedItem'
+ *                         type: object
  *                     pickedUp:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/RequestedItem'
+ *                         type: object
  *                 count:
  *                   type: object
  *                   properties:
@@ -125,45 +157,8 @@
  *         description: Item not found or unauthorized
  *       500:
  *         description: Internal server error
- *
- * components:
- *   schemas:
- *     RequestedItem:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *         requestedAt:
- *           type: string
- *           format: date-time
- *         expiresAt:
- *           type: string
- *           format: date-time
- *         status:
- *           type: string
- *           enum: [pending, picked_up, expired, cancelled]
- *         timeRemaining:
- *           type: integer
- *           description: Minutes remaining until expiration
- *         isExpired:
- *           type: boolean
- *         goods:
- *           type: object
- *           nullable: true
- *           properties:
- *             id:
- *               type: string
- *             name:
- *               type: string
- *             description:
- *               type: string
- *             image:
- *               type: string
- *             type:
- *               type: string
- *             address:
- *               type: string
  */
+
 
 import RequestedItem from '@/app/_models/requesteditems';
 import connectDB from '@/app/_lib/mongodb';
