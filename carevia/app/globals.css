@@ -30,7 +30,7 @@
 body {
     font-family: 'system-ui', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: 1.5;
-    height: 100vh;
+    min-height: 100vh;
     color: var(--color-text-dark);
     display: flex;
     flex-direction: column;
@@ -193,10 +193,10 @@ h2 {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 20%;
-    left: 40%;
+    max-width: 500px;
+    left: 50%;
     transform: translateX(-50%);
-    width: 70%;
+    width: 90%;
     z-index: 999;
 }
 
@@ -318,7 +318,8 @@ h2 {
     gap: 5%;
     margin-top: 5%;
     align-items: center;
-    width: 18rem;
+    max-width: 18rem;
+    width: 100%;
     border-color: #FFC857;
     background: #fff;
     padding: 2rem;
@@ -383,9 +384,10 @@ h2 {
 .text-center {
     display: flex;
     flex-direction: column;
-    margin-left: 10%;
-    width: 80%;
-    margin-top: 3%;
+    /* margin-left: 10%; */
+    width: 90%;
+    max-width: 900px;
+    margin: 3% auto;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
@@ -1574,7 +1576,7 @@ th {
 .mydonation-component,
 .needs-component {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
 }
@@ -1825,11 +1827,12 @@ th {
 .login-page {
     display: flex;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 .sidecover-component {
     width: 50%;
-    background-color: red;
+   
 }
 
 .sidecover-image {
@@ -1952,7 +1955,8 @@ th {
 
     .stats-cards {
         width: 100%;
-        height: 50vh;
+        min-height: 15vh;
+        height: auto;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -2064,7 +2068,8 @@ th {
     }
 
     .main-content {
-        margin-left: 200px;
+        /* margin-left: 200px; */
+        margin-left: 20%;
     }
 }
 
@@ -2190,6 +2195,21 @@ th {
     .step {
         min-width: 100%;
         margin-bottom: 1.5rem;
+    }
+     .sidecover-component {
+        display: none; /* ✅ FIX: remove heavy image */
+    }
+
+    .reg-component, .login-form-container{
+        width: 100%; /* ✅ FIX: full-width form */
+    }
+     .donate-page,
+    .mydonation-page,
+    .edit-page,
+    .needs-page ,
+    .homepage-container{
+        width: 100%;
+        margin-left: 0; /* ✅ FIX: side nav is hidden */
     }
 }
 
