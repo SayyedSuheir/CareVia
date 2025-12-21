@@ -2079,12 +2079,36 @@ th {
 @media screen and (max-width: 1400px) {
     .mobile-note {
         display: flex;
-        width: 100%;
+        max-width: 100%;
+        flex-wrap: wrap;
+        margin-left: 10%;
+        
     }
 
-    .yellow {
-        background: var(--color-primary);
+     .yellow {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+    background: transparent; 
+    
+    
     }
+    .note{
+        box-shadow: none !important;
+        padding: 0 !important;
+        color:black !important ;
+        opacity: 0.8;
+        max-width: 100%;
+       
+        
+        
+    }
+    .author{
+        margin:0 !important;
+    }
+
 
     .quote-container {
         display: none;
@@ -2389,19 +2413,26 @@ th {
     .postform-title {
         font-size: 1.5rem;
     }
-
+  
     .yellow {
     -webkit-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -ms-transform: rotate(0deg);
     transform: rotate(0deg);
+    background: transparent; 
+    
+    
     }
     .note{
         box-shadow: none;
         padding: 0 !important;
         color:black !important ;
         opacity: 0.8;
+        max-width: 100%;
+       
+        
+        
     }
     .author{
         margin:0 !important;
