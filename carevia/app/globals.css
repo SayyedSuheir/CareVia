@@ -2203,7 +2203,7 @@ th {
     .reg-component, .login-form-container{
         width: 100%; /* ✅ FIX: full-width form */
     }
-     .donate-page,
+    .donate-page,
     .mydonation-page,
     .edit-page,
     .needs-page ,
@@ -2211,6 +2211,24 @@ th {
         width: 100%;
         margin-left: 0; /* ✅ FIX: side nav is hidden */
     }
+
+    .yellow {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+    }
+    .note{
+        box-shadow: none;
+        padding: 0 !important;
+        color:black !important ;
+        opacity: 0.8;
+    }
+    .author{
+        margin:0 !important;
+    }
+
 }
 
 /* ============================================================================
@@ -2370,6 +2388,23 @@ th {
     .section-title,
     .postform-title {
         font-size: 1.5rem;
+    }
+
+    .yellow {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    transform: rotate(0deg);
+    }
+    .note{
+        box-shadow: none;
+        padding: 0 !important;
+        color:black !important ;
+        opacity: 0.8;
+    }
+    .author{
+        margin:0 !important;
     }
 }
 
