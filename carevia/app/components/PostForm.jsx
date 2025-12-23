@@ -256,14 +256,14 @@ if (!data.success) {
           </button>
         </div>
       </form>
-      <div className="quote-container">
-      {/* <i className="pin"></i> */}
+      {/* <div className="quote-container">
+      
       <blockquote className="note yellow">
         Note: To keep CareVia safe and trustworthy, this form uses AI image detection. 
           Any AI-generated images or images that violate our guidelines will not be published.
         <cite className="author">CareVia</cite>
       </blockquote>
-      </div>
+      </div> */}
     </div>
   );
 };
