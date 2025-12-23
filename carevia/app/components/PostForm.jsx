@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useAuth } from "@/app/_context/useAuth";
 import { useRouter } from "next/navigation";
-import toast from 'react-hot-toast';
+import toast,{Toaster} from 'react-hot-toast';
 const PostFormWithImage = () => {
   const { user, isLoggedIn, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -80,6 +80,15 @@ const PostFormWithImage = () => {
       setImagePreview(null);
       return;
     }
+
+     // ✅ ADD THIS - Show the note as a toast
+    toast('Note: To keep CareVia safe and trustworthy, this form uses AI image detection. Any AI-generated images or images that violate our guidelines will not be published.', {
+    duration: 4000,
+    icon: 'ℹ️',
+      style: {
+        maxWidth: '500px',
+      },
+    });
 
     setCheckingAI(true);
     setError("");
@@ -194,15 +203,16 @@ if (!data.success) {
 
   return (
     <div className="postform-container">
-      <div className="mobile-note">
+      <Toaster position="top-right" />
+      {/* <div className="mobile-note">
       
-      {/* <i className="pin"></i> */}
+   
       <blockquote className="note yellow">
         Note: To keep CareVia safe and trustworthy, this form uses AI image detection. 
           Any AI-generated images or images that violate our guidelines will not be published.
         <cite className="author">CareVia</cite>
       </blockquote>
-      </div>
+      </div> */}
       
       <form onSubmit={handleSubmit} className="postform-form">
         {error && <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>}
