@@ -2292,7 +2292,7 @@ th {
         width: 100%;
         display: flex;
         justify-content: center;
-        left: 50;
+        left: 0;
         /* margin-left: 5%; */
         bottom: 0;
         transform: none;
