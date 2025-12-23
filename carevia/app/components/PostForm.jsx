@@ -226,9 +226,13 @@ if (!data.success) {
               <input type="text" name="name" placeholder="Item Name" value={formData.name} onChange={handleChange} required />
             </div>
             <div className="postform-input-image">
-              <input type="file" accept="image/*" onChange={handleImageChange}  ref={imageInputRef} required />
-              {checkingAI && <p>Checking image safety...</p>}
-              {imagePreview && <Image src={imagePreview} alt="preview" width={200} height={200} className="imgpre" />}
+              <div className="image-input">
+                <input type="file" accept="image/*" onChange={handleImageChange}  ref={imageInputRef} required />
+                {checkingAI && <p>Checking image safety...</p>}
+             </div>
+             <div className="imgpre">
+               {imagePreview && <Image src={imagePreview} alt="preview" width={300} height={200}  />}
+            </div>
             </div>
             <div className="postform-input-village">
              <input type="text" name="village" ref={villageRef} value={formData.village} onChange={handleChange} placeholder="Village" required />

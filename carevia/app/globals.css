@@ -702,6 +702,8 @@ h2 {
 .postform-container {
     width: 100%;
     display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
 .postform-title {
@@ -718,23 +720,27 @@ h2 {
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    width: 70%;
+    width: 100%;
     max-width: 600px;
+    padding: 2rem;
     font-family: Arial, sans-serif;
     display: flex;
     box-shadow: 0 4px 15px #0000000d;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
-.postform-imgpre {
-    width: 100%;
+.imgpre {
+    max-width: 50%;
     color: var(--color-primary);
     font-weight: 700;
+}
+.imgpre img{
+    min-width: 100%;
 }
 
 .postform-itemname,
 .postform-image,
-.postform-imgpre,
+
 .postform-address,
 .postform-decr,
 .postform-create {
@@ -958,89 +964,7 @@ h2 {
     background: #9ca3af;
 }
 
-/* ============================================================================
-   17. STICKY NOTE (QUOTE)
-   ============================================================================ */
-.quote-container {
-    width: 30%;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
 
-.note {
-    color: white;
-    width: 300px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Satisfy;
-    font-size: 30px;
-    box-shadow: 0 10px 10px 2px rgba(0, 0, 0, 0.3);
-}
-
-.note .author {
-    display: block;
-    margin: 40px 0 0 0;
-    text-align: right;
-}
-
-.yellow {
-    background: var(--color-primary);
-    -webkit-transform: rotate(2deg);
-    -moz-transform: rotate(2deg);
-    -o-transform: rotate(2deg);
-    -ms-transform: rotate(2deg);
-    transform: rotate(2deg);
-}
-
-.pin {
-    background-color: #aaa;
-    display: block;
-    height: 32px;
-    width: 2px;
-    position: relative;
-    left: 50%;
-    top: -25%;
-    z-index: 1;
-}
-
-.pin:after {
-    background-color: #A31;
-    background-image: radial-gradient(25% 25%, circle, hsla(0, 0%, 100%, .3), hsla(0, 0%, 0%, .3));
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, .1), inset 3px 3px 3px hsla(0, 0%, 100%, .2), inset -3px -3px 3px hsla(0, 0%, 0%, .2), 23px 20px 3px hsla(0, 0%, 0%, .15);
-    content: '';
-    height: 12px;
-    left: -5px;
-    position: absolute;
-    top: -10px;
-    width: 12px;
-}
-
-.pin:before {
-    background-color: hsla(0, 0%, 0%, 0.1);
-    box-shadow: 0 0 .25em hsla(0, 0%, 0%, .1);
-    content: '';
-    height: 24px;
-    width: 2px;
-    left: 0;
-    position: absolute;
-    top: 8px;
-    transform: rotate(57.5deg);
-    -moz-transform: rotate(57.5deg);
-    -webkit-transform: rotate(57.5deg);
-    -o-transform: rotate(57.5deg);
-    -ms-transform: rotate(57.5deg);
-    transform-origin: 50% 100%;
-    -moz-transform-origin: 50% 100%;
-    -webkit-transform-origin: 50% 100%;
-    -ms-transform-origin: 50% 100%;
-    -o-transform-origin: 50% 100%;
-}
-
-.mobile-note {
-    display: none;
-}
 
 /* ============================================================================
    18. COVER/LANDING PAGE
@@ -2071,49 +1995,27 @@ th {
         /* margin-left: 200px; */
         margin-left: 20%;
     }
+      .donate-page {
+        width: 80%;
+        margin-left: 20%; /* ✅ Side nav visible */
+    }
+
+    .postform-container {
+        width: 100%;
+        padding-bottom: 20px; /* ✅ No bottom nav on desktop */
+    }
+
+    .postform-form {
+        max-width: 700px;
+    }
 }
 
 /* ============================================================================
    34. MEDIA QUERIES - TABLET/SMALL DESKTOP (max-width: 1400px)
    ============================================================================ */
 @media screen and (max-width: 1400px) {
-    .mobile-note {
-        display: flex;
-        max-width: 100%;
-        flex-wrap: wrap;
-        margin-left: 10%;
-        
-    }
-
-     .yellow {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
-    background: transparent; 
-    
-    
-    }
-    .note{
-        box-shadow: none !important;
-        padding: 0 !important;
-        color:black !important ;
-        opacity: 0.8;
-        max-width: 100%;
-       
-        
-        
-    }
-    .author{
-        margin:0 !important;
-    }
-
-
-    .quote-container {
-        display: none;
-    }
-
+  
+ 
     .donate-page {
         width: 100%;
         margin-left: 20%;
@@ -2122,7 +2024,7 @@ th {
     }
 
     .postform-container {
-        width: 80%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -2130,18 +2032,12 @@ th {
 
     .postform-form {
         width: 100%;
+        max-width: 700px;
         display: flex;
         flex-direction: column;
         justify-content: center;
     }
 
-    .note {
-        color: white;
-        width: 100%;
-        font-family: Satisfy;
-        font-size: 30px;
-        box-shadow: 0 10px 10px 2px rgba(0, 0, 0, 0.3);
-    }
 
     .postform-body {
         display: flex;
@@ -2156,22 +2052,34 @@ th {
         flex-direction: column;
         align-items: center;
     }
-
+    .postform-input-image{
+        min-width: 100%;
+        display: flex;
+        justify-content: start;
+       
+        gap:5%;
+    }
     .postform-input-itemname,
-    .postform-input-image,
+    
     .postform-input-village,
     .postform-input-area,
     .postform-input-city,
     .postform-select,
     .postform-description,
     .postform-btn {
-        width: 80%;
+        width: 100%;
         display: flex;
         justify-content: center;
     }
-
+    .image-input {
+        max-width: 50%;
+    }
+    .image-input input{
+        min-width: 100%;
+        min-height: 50vh;
+    }
     .postform-input-itemname input,
-    .postform-input-image input,
+    
     .postform-input-village input,
     .postform-input-area input,
     .postform-input-city input,
@@ -2236,22 +2144,32 @@ th {
         margin-left: 0; /* ✅ FIX: side nav is hidden */
     }
 
-    .yellow {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
+    .postform-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 100px; /* ✅ ADD: Extra space for bottom nav on mobile */
+}
+
+ .postform-form {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+        font-family: Arial, sans-serif;
+        display: flex;
+        box-shadow: 0 4px 15px #0000000d;
+        margin: 20px auto;
     }
-    .note{
-        box-shadow: none;
-        padding: 0 !important;
-        color:black !important ;
-        opacity: 0.8;
-    }
-    .author{
-        margin:0 !important;
-    }
+ 
+  
 
 }
 
@@ -2364,9 +2282,7 @@ th {
         width: 100%;
     }
 
-    .mobile-note {
-        display: block;
-    }
+    
 
     .bottom-navbar-container {
         width: 100%;
@@ -2404,39 +2320,37 @@ th {
         padding: 0.5rem;
     }
 
-    .note {
-        width: 90%;
-        font-size: 1.5rem;
-    }
+   
 
     .section-title,
     .postform-title {
         font-size: 1.5rem;
     }
+  .postform-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    padding-bottom: 100px; /* ✅ ADD: Extra space for bottom nav on mobile */
+}
+
+ .postform-form {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+        font-family: Arial, sans-serif;
+        display: flex;
+        box-shadow: 0 4px 15px #0000000d;
+        margin: 20px auto;
+    }
   
-    .yellow {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
-    background: transparent; 
-    
-    
-    }
-    .note{
-        box-shadow: none;
-        padding: 0 !important;
-        color:black !important ;
-        opacity: 0.8;
-        max-width: 100%;
-       
-        
-        
-    }
-    .author{
-        margin:0 !important;
-    }
 }
 
 /* ============================================================================
