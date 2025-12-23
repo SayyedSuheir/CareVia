@@ -727,6 +727,7 @@ h2 {
     display: flex;
     box-shadow: 0 4px 15px #0000000d;
     margin: 20px auto;
+    margin-bottom: 150px;
 }
 
 .imgpre {
@@ -2167,8 +2168,11 @@ th {
         display: flex;
         box-shadow: 0 4px 15px #0000000d;
         margin: 20px auto;
+        margin-bottom: 180px;
     }
- 
+ .bottom-navbar-container{
+    z-index: 999;
+ }
   
 
 }
@@ -2287,7 +2291,7 @@ th {
     .bottom-navbar-container {
         width: 100%;
         left: 0;
-        margin-left: 0;
+        margin-left: 10%;
         bottom: 0;
         transform: none;
         padding: 0.5rem;
@@ -2349,6 +2353,14 @@ th {
         display: flex;
         box-shadow: 0 4px 15px #0000000d;
         margin: 20px auto;
+    }
+    .imgpre {
+    max-width: 50%;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+    .imgpre img{
+        min-width: 100%;
     }
   
 }
