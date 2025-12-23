@@ -2290,8 +2290,10 @@ th {
 
     .bottom-navbar-container {
         width: 100%;
-        left: 0;
-        margin-left: 5%;
+        display: flex;
+        justify-content: center;
+        left: 50;
+        /* margin-left: 5%; */
         bottom: 0;
         transform: none;
         padding: 0.5rem;
