@@ -2077,7 +2077,7 @@ th {
     }
     .image-input input{
         min-width: 100%;
-        min-height: 50vh;
+        /* min-height: 50vh; */
     }
     .postform-input-itemname input,
     
@@ -2291,7 +2291,7 @@ th {
     .bottom-navbar-container {
         width: 100%;
         left: 0;
-        margin-left: 10%;
+        margin-left: 5%;
         bottom: 0;
         transform: none;
         padding: 0.5rem;
