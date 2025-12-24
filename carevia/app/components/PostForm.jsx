@@ -171,8 +171,8 @@ if (!data.success) {
 
       const res = await fetch("/api/postsaction/createPost", {
         method: "POST",
-        credentials: "include",
-        body: dataToSend,
+        // credentials: "include",
+        body: formData,
       });
 
       const data = await res.json();
