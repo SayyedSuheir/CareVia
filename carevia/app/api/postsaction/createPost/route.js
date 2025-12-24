@@ -118,8 +118,9 @@
 
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import path from "path";
-import { writeFile } from "fs/promises";
+// import path from "path";
+// import { writeFile } from "fs/promises";
+import { put } from "@vercel/blob";
 import connectDB from "@/app/_lib/mongodb";
 import Goods from "@/app/_models/Goods";
 import { validateImage } from "@/app/_lib/validateImage";
@@ -254,14 +255,25 @@ export async function POST(req) {
       );
 
     // ✅ Save Image
-    const buffer = Buffer.from(await imageFile.arrayBuffer());
+    // const buffer = Buffer.from(await imageFile.arrayBuffer());
+    // const timestamp = Date.now();
+    // const safeName = imageFile.name.replace(/\s+/g, "-");
+    // const filename = `${timestamp}-${safeName}`;
+    // const uploadDir = path.join(process.cwd(), "public", "uploads");
+    // const filepath = path.join(uploadDir, filename);
+    // await writeFile(filepath, buffer);
+    // const imageUrl = `/uploads/${filename}`;
+     // ✅ Upload Image to Vercel Blob
     const timestamp = Date.now();
     const safeName = imageFile.name.replace(/\s+/g, "-");
     const filename = `${timestamp}-${safeName}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    const filepath = path.join(uploadDir, filename);
-    await writeFile(filepath, buffer);
-    const imageUrl = `/uploads/${filename}`;
+    
+    const blob = await put(filename, imageFile, {
+      access: 'public',
+      addRandomSuffix: true, // Prevents filename collisions
+    });
+    
+    const imageUrl = blob.url; // This is the public Vercel Blob URL
  // ✅ Determine Status using helper function
     const status = shouldBePending(name, description) ? "pending" : "approved";
 

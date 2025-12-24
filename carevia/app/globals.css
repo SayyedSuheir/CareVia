@@ -2289,18 +2289,19 @@ th {
     
 
     .bottom-navbar-container {
-        width: 100%;
+        width: 90%;
         display: flex;
         justify-content: center;
-        left: 0;
-        /* margin-left: 5%; */
+        left: 50%;
+        margin-left: 5%;
         bottom: 0;
-        transform: none;
+         transform: translateX(-50%); /* ✅ Shift back by half its width */
         padding: 0.5rem;
     }
 
     .bottom-navbar {
         padding: 0.5rem 1rem;
+        width: 100%;
     }
 
     .cta-buttons {
