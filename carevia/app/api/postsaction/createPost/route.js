@@ -267,11 +267,20 @@ export async function POST(req) {
     const timestamp = Date.now();
     const safeName = imageFile.name.replace(/\s+/g, "-");
     const filename = `${timestamp}-${safeName}`;
-    
+    console.log("🔍 Debug Info:");
+    console.log("  Original filename:", imageFile.name);
+    console.log("  Safe filename:", safeName);
+    console.log("  Full filename:", filename);
+    console.log("  BLOB_READ_WRITE_TOKEN exists:", !!process.env.BLOB_READ_WRITE_TOKEN);
+
     const blob = await put(filename, imageFile, {
       access: 'public',
       addRandomSuffix: true, // Prevents filename collisions
     });
+    console.log("✅ Blob upload successful!");
+    console.log("  Blob URL:", blob.url);
+    console.log("  Blob pathname:", blob.pathname);
+    console.log("  Blob contentType:", blob.contentType);
     
     const imageUrl = blob.url; // This is the public Vercel Blob URL
  // ✅ Determine Status using helper function

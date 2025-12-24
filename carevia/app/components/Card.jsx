@@ -190,7 +190,8 @@ function Card() {
       </div>
     );
   }
-
+    console.log('Post image URL:', posts.image);
+   
   return (
     <div className="homepage" style={{ display: "flex", flexDirection: "column" }}>
       <Toaster position="top-right" />
@@ -207,6 +208,7 @@ function Card() {
 
       <div className="card-container">
         {posts.map((post) => (
+        
           <div key={post.id}>
             <div className="card">
               <div className="card-title">
@@ -218,6 +220,12 @@ function Card() {
                   alt={post.name}
                   width={300}
                   height={200}
+
+                  unoptimized={post.image?.includes('blob.vercel-storage.com') ? false : true}
+                  onError={(e) => {
+                  console.error('Image load error:', post.image);
+                  e.target.src = '/defaultGoods.png';
+                  }}
                 />
                 <div className="card-title">{post.Type}</div>
               </div>
