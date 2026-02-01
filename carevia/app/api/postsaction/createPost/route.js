@@ -125,6 +125,9 @@ import connectDB from "@/app/_lib/mongodb";
 import Goods from "@/app/_models/Goods";
 import { validateImage } from "@/app/_lib/validateImage";
 
+export const runtime = 'nodejs'; // Force Node.js runtime
+export const dynamic = 'force-dynamic'; // Prevent static optimization
+
 function shouldBePending(name, description) {
   const pendingKeywords = [
     "villa",

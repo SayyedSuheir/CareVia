@@ -172,7 +172,7 @@ if (!data.success) {
       const res = await fetch("/api/postsaction/createPost", {
         method: "POST",
         // credentials: "include",
-        body: formData,
+        body: dataToSend,
       });
 
       const data = await res.json();

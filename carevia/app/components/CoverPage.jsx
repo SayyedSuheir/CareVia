@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { useContext } from "react";
 import { UserContext } from "../_context/UserContext";
 import Image from 'next/image';
@@ -124,11 +126,47 @@ const styles = {
 };
 
 const CoverPage = () => {
-     const {isLoggedIn} = useContext(UserContext);
+     const router = useRouter();
+    const { user, isLoggedIn, setIsLoggedIn, setUser } = useContext(UserContext);
+    const handleLogout = async () => {
+    try {
+      // ✅ FIX scroll locking (offcanvas cleanup)
+      document.body.classList.remove("modal-open");
+      document.body.style.overflow = "";
+
+      document
+        .querySelectorAll(".offcanvas-backdrop, .modal-backdrop")
+        .forEach((el) => el.remove());
+      
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        setIsLoggedIn(false);
+        setUser(null);
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <div style={styles.container}>
       {/* PAGE 1 CONTENT */}
-      
+         {/* 🔹 Top Navigation (ONLY when logged in) */}
+      {isLoggedIn && (
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", marginBottom: "1rem" }}>
+          <Link href="/homePage" style={styles.ctaButtonSecondary}>
+            Home
+          </Link>
+          <button onClick={handleLogout} style={styles.ctaButtonPrimary}>
+            Logout
+          </button>
+        </div>
+      )}
       {/* Hero Section */}
       <section style={styles.heroSection}>
         <h1 style={styles.title}>

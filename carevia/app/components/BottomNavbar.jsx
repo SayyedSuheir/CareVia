@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FaHome, FaSignOutAlt,FaSignInAlt,FaPlusCircle, FaHandHoldingUsd, FaHandHoldingHeart } from "react-icons/fa";
+import { FaHome, FaSignOutAlt,FaSignInAlt,FaPlusCircle, FaHandHoldingUsd, FaHandHoldingHeart, FaRegBell } from "react-icons/fa";
 import { usePathname, useRouter } from "next/navigation";
 import { UserContext } from "../_context/UserContext";
 import { useContext } from "react";
@@ -46,6 +46,10 @@ export default function BottomNavbar() {
         <Link href={"/homePage"}>
             <NavItem icon={<FaHome className="icon home" />} label="Home" />
         </Link>
+
+         <Link href={"/notificationsPage"}>
+        <NavItem icon={<FaRegBell className="icon needs" />} label="Notifications" />
+        </Link>
        
         <Link href={"/donatePage"}>
         <NavItem icon={<FaPlusCircle className="icon create" />} label="Create" />
@@ -61,14 +65,14 @@ export default function BottomNavbar() {
         {!isLoggedIn ? (
           <Link href="/loginPage">
             <NavItem
-              icon={<FaSignInAlt className="icon logout" />}
+              icon={<FaSignInAlt className="icon home" />}
               label="Login"
             />
           </Link>
         ) : (
           <Link href="/" onClick={handleLogout}>
             <NavItem
-              icon={<FaSignOutAlt className="icon logout" />}
+              icon={<FaSignOutAlt className="icon logout home" />}
               label="Logout"
             />
           </Link>

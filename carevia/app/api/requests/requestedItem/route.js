@@ -147,6 +147,9 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectDB from "@/app/_lib/mongodb";
 import RequestedItem from "@/app/_models/requesteditems";
+import Notification from '@/app/_models/Notification';
+import Goods from '@/app/_models/Goods'; // 🔥 ADD THIS
+import Users from '@/app/_models/Users'; // 🔥 ADD THIS
 
 /**
  * POST /api/requests/requestedItem
@@ -194,6 +197,27 @@ export async function POST(request) {
       expiresAt,
       status: "pending",
     });
+
+     // 🔥 ADD THIS BLOCK - Create notification for goods owner
+    try {
+      const good = await Goods.findById(goodsObjectId);
+      const requester = await Users.findById(userObjectId);
+      
+      if (good && requester && good.userId.toString() !== userId) {
+        await Notification.create({
+          recipient_id: good.userId,
+          sender_id: userObjectId,
+          goodsId: goodsObjectId,
+          requestedItemId: requestedItem._id,
+          type: 'item_requested',
+          message: `${requester.name || requester.email} is interested in your ${good.name || 'item'}`
+        });
+      }
+    } catch (notifError) {
+      console.error("Error creating notification:", notifError);
+      // Don't fail the request if notification fails
+    }
+    // 🔥 END OF ADDITION
 
     return NextResponse.json(
       {

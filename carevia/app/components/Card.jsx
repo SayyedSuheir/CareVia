@@ -110,7 +110,7 @@ function Card() {
       }
 
       setPosts((prevPosts) => prevPosts.filter((p) => p.id !== post.id));
-      toast.success("Item requested successfully! You have 24 hours to pick it up.");
+      toast.success("Request sent! Owner has been notified. You have 24 hours to pick it up.");
       router.push("/homePage");
     } catch (error) {
       console.error(error);
